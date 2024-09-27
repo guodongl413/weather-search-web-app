@@ -1,0 +1,13 @@
+# 忽略虚拟环境目录
+venv/
+
+# Python 缓存文件
+__pycache__/
+*.pyc
+*.pyo
+
+# 环境变量文件
+*.env
+
+# macOS 生成的文件
+.DS_Store
