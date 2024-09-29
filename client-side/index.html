@@ -32,7 +32,11 @@
     <h2>Weather Data:</h2>
     <pre id="weatherData"></pre>
 
-    <script>
+    <script src="./config.js" type="module"></script>
+    <script type="module">
+
+        import config from './config.js';
+
         function getWeather() {
             // 获取表单数据
             const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
@@ -41,7 +45,7 @@
             const state = document.getElementById('state').value;
 
             // 构建请求 URL
-            let url = 'http://127.0.0.1:5000/get_location';
+            let url = `${config.API_BASE_URL}/get_location`;
             const params = new URLSearchParams();
 
             if (useCurrentLocation) {
@@ -72,6 +76,8 @@
                     document.getElementById('weatherData').textContent = 'Error: ' + error.message;
                 });
         }
+
+        window.getWeather = getWeather;
     </script>
 </body>
 </html>
