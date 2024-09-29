@@ -26,7 +26,8 @@
         <input type="text" id="state" name="state">
         <br><br>
 
-        <button type="button" onclick="getWeather()">Get Weather</button>
+        <button type="button" onclick="getWeather()">Submit</button>
+        <button type="button" onclick="clearForm()">Clear</button>
     </form>
 
     <h2>Weather Data:</h2>
@@ -77,7 +78,18 @@
                 });
         }
 
+        function clearForm() {
+            // 清除表单中的所有输入和结果
+            document.getElementById('useCurrentLocation').checked = false;
+            document.getElementById('street').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('weatherData').textContent = '';
+        }
+
         window.getWeather = getWeather;
+        window.clearForm = clearForm;
+
     </script>
 </body>
 </html>
