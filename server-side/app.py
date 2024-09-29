@@ -73,7 +73,8 @@ def get_location():
         "fields": ",".join([
             "temperature", "temperatureApparent", "temperatureMin", "temperatureMax",
             "windSpeed", "humidity", "uvIndex", "pressureSeaLevel", "sunriseTime",
-            "sunsetTime", "cloudCover", "precipitationProbability", "precipitationType"
+            "sunsetTime", "cloudCover", "precipitationProbability", "precipitationType",
+            "weatherCode", "visibility", "moonPhase"
         ]),
         "units": "imperial",
         "timesteps": "1d",
