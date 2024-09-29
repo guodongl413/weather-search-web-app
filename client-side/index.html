@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App Test</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
+        .weather-header, .weather-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
             border: 1px solid #ddd;
         }
-        th {
-            background-color: #4CAF50;
+        .weather-header {
+            background-color: #4c82af;
             color: white;
-            padding: 10px;
-            text-align: left;
+            font-weight: bold;
         }
-        td {
-            padding: 10px;
+        .weather-row {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .weather-row:hover {
+            background-color: #f1f1f1;
+        }
+        .weather-cell {
+            flex: 1;
             text-align: left;
         }
     </style>
@@ -118,18 +122,15 @@
 
         function displayWeatherTable(weatherIntervals) {
             let tableContent = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Temp High</th>
-                            <th>Temp Low</th>
-                            <th>Wind Speed</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="weather-header">
+                    <div class="weather-cell">Date</div>
+                    <div class="weather-cell">Status</div>
+                    <div class="weather-cell">Temp High</div>
+                    <div class="weather-cell">Temp Low</div>
+                    <div class="weather-cell">Wind Speed</div>
+                </div>
             `;
+
             for (let interval of weatherIntervals) {
                 const date = new Date(interval.startTime).toLocaleDateString('en-US', {
                     weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
@@ -141,22 +142,22 @@
                 const windSpeed = interval.values.windSpeed;
 
                 tableContent += `
-                    <tr>
-                        <td>${date}</td>
-                        <td><img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}</td>
-                        <td>${tempHigh}</td>
-                        <td>${tempLow}</td>
-                        <td>${windSpeed}</td>
-                    </tr>
+                    <div class="weather-row clickable-row" onclick="handleRowClick('${interval.startTime}')">
+                        <div class="weather-cell">${date}</div>
+                        <div class="weather-cell">
+                            <img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}
+                        </div>
+                        <div class="weather-cell">${tempHigh} °F</div>
+                        <div class="weather-cell">${tempLow} °F</div>
+                        <div class="weather-cell">${windSpeed} mph</div>
+                    </div>
                 `;
             }
-            tableContent += `</tbody></table>`;
+
             document.getElementById('weatherTable').innerHTML = tableContent;
         }
 
         function mapWeatherCodeToStatus(weatherCode) {
-            // 根据API文档，映射weatherCode到相应的文本描述和图片
-            // 这里是示例映射，你需要根据文档进行修改
             const weatherMap = {
                 1000: { description: "Clear", icon: "./weather-code-symbols/clear_day.svg" },
                 1100: { description: "Mostly Clear", icon: "./weather-code-symbols/mostly_clear_day.svg" },
@@ -181,7 +182,6 @@
                 7101: { description: "Heavy Ice Pellets", icon: "./weather-code-symbols/ice_pellets_heavy.svg" },
                 7102: { description: "Light Ice Pellets", icon: "./weather-code-symbols/ice_pellets_light.svg" },
                 8000: { description: "Thunderstorm", icon: "./weather-code-symbols/tstorm.svg" }
-                // 其他的映射根据实际需求补充
             };
             return weatherMap[weatherCode] || { description: "Unknown", icon: "" };
         }
@@ -197,6 +197,10 @@
 
         window.getWeather = getWeather;
         window.clearForm = clearForm;
+
+        function handleRowClick(startTime) {
+            alert(`Row clicked for date: ${startTime}`);
+        }
     </script>
 </body>
 </html>
