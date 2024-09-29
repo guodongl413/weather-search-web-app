@@ -16,7 +16,6 @@ IPINFO_API_TOKEN = os.getenv('IPINFO_API_TOKEN')
 if not TOMORROW_API_KEY or not GOOGLE_MAPS_API_KEY or not IPINFO_API_TOKEN:
     raise EnvironmentError("One or more API keys are not set. Please check your .env file.")
 
-
 # 确认变量已经成功加载
 print(TOMORROW_API_KEY)  # 你可以暂时打印变量，确保加载成功
 
@@ -29,6 +28,7 @@ def index():
 def get_location():
     # 获取用户的街道、城市和州信息，或者用户选择的当前位置信息
     use_current_location = request.args.get('use_current_location', '').lower() == 'true'
+    street = request.args.get('street')
     city = request.args.get('city')
     state = request.args.get('state')
 
@@ -36,24 +36,25 @@ def get_location():
     if use_current_location:
         # 使用 ipinfo.io 获取当前位置信息
         ip_info_response = requests.get(f'https://ipinfo.io?token={IPINFO_API_TOKEN}')  # 使用你的 ipinfo API 令牌
+        if ip_info_response.status_code != 200:
+            return jsonify({'error': 'Failed to retrieve current location'}), 400
         location_data = ip_info_response.json()
         city = location_data.get('city')
         state = location_data.get('region')
         if not city or not state:
             return jsonify({'error': 'Failed to retrieve current location'}), 400
     else:
-        # 检查用户是否手动输入了城市和州
-        if not city or not state:
-            return jsonify({'error': 'City and State are required'}), 400
+        # 检查用户是否手动输入了街道、城市和州
+        if not street or not city or not state:
+            return jsonify({'error': 'Street, City, and State are required'}), 400
 
     # 调用 Google Maps Geocoding API 获取纬度和经度
-    address = f"{city}, {state}"
+    address = f"{street}, {city}, {state}"
     geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
     geocode_response = requests.get(geocode_url)
     if geocode_response.status_code != 200:
         return jsonify({'error': 'Google Maps API request failed'}), 400
     geocode_data = geocode_response.json()
-
 
     # 检查 Google Maps API 响应是否有效
     if 'results' not in geocode_data or not geocode_data['results']:
