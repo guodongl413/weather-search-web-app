@@ -31,11 +31,10 @@
     </form>
 
     <h2>Weather Data:</h2>
-    <pre id="weatherData"></pre>
+    <div id="weatherCard"></div>
 
     <script src="./config.js" type="module"></script>
     <script type="module">
-
         import config from './config.js';
 
         function getWeather() {
@@ -69,13 +68,34 @@
                     return response.json();
                 })
                 .then(data => {
-                    // 显示天气数据
-                    document.getElementById('weatherData').textContent = JSON.stringify(data, null, 2);
+                    // 提取当天的天气数据并显示在卡片上
+                    const todayWeather = data.data.timelines[0].intervals[0].values;
+                    const location = useCurrentLocation ? 'Current Location' : `${street}, ${city}, ${state}`;
+                    displayWeatherCard(location, todayWeather);
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
-                    document.getElementById('weatherData').textContent = 'Error: ' + error.message;
+                    document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
                 });
+        }
+
+        function displayWeatherCard(location, weather) {
+            // 创建卡片内容
+            const cardContent = `
+                <div>
+                    <h3>Location: ${location}</h3>
+                    <p><strong>Temperature:</strong> ${weather.temperature} °F</p>
+                    <p><strong>Humidity:</strong> ${weather.humidity}%</p>
+                    <p><strong>Pressure:</strong> ${weather.pressureSeaLevel} inHg <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-16-512.png" alt="Pressure Icon" width="20"></p>
+                    <p><strong>Wind Speed:</strong> ${weather.windSpeed} mph <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-25-512.png" alt="Wind Speed Icon" width="20"></p>
+                    <p><strong>Visibility:</strong> ${weather.visibility || 'N/A'} miles <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-30-512.png" alt="Visibility Icon" width="20"></p>
+                    <p><strong>Cloud Cover:</strong> ${weather.cloudCover}% <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-28-512.png" alt="Cloud Cover Icon" width="20"></p>
+                    <p><strong>UV Index:</strong> ${weather.uvIndex} <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-24-512.png" alt="UV Index Icon" width="20"></p>
+                </div>
+            `;
+
+            // 将卡片内容放入 HTML 中
+            document.getElementById('weatherCard').innerHTML = cardContent;
         }
 
         function clearForm() {
@@ -84,12 +104,11 @@
             document.getElementById('street').value = '';
             document.getElementById('city').value = '';
             document.getElementById('state').value = '';
-            document.getElementById('weatherData').textContent = '';
+            document.getElementById('weatherCard').innerHTML = '';
         }
 
         window.getWeather = getWeather;
         window.clearForm = clearForm;
-
     </script>
 </body>
 </html>
