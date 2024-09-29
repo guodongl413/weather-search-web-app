@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App Test</title>
+</head>
+<body>
+    <h1>Weather App Test</h1>
+    <form id="weatherForm">
+        <label for="useCurrentLocation">
+            <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation">
+            Use Current Location
+        </label>
+        <br><br>
+
+        <label for="street">Street: </label>
+        <input type="text" id="street" name="street">
+        <br><br>
+
+        <label for="city">City: </label>
+        <input type="text" id="city" name="city">
+        <br><br>
+
+        <label for="state">State: </label>
+        <input type="text" id="state" name="state">
+        <br><br>
+
+        <button type="button" onclick="getWeather()">Get Weather</button>
+    </form>
+
+    <h2>Weather Data:</h2>
+    <pre id="weatherData"></pre>
+
+    <script>
+        function getWeather() {
+            // 获取表单数据
+            const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
+            const street = document.getElementById('street').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+
+            // 构建请求 URL
+            let url = 'http://127.0.0.1:5000/get_location';
+            const params = new URLSearchParams();
+
+            if (useCurrentLocation) {
+                params.append('use_current_location', 'true');
+            } else {
+                if (street) params.append('street', street);
+                if (city) params.append('city', city);
+                if (state) params.append('state', state);
+            }
+
+            // 完整的 URL
+            url += `?${params.toString()}`;
+
+            // 发起请求
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 显示天气数据
+                    document.getElementById('weatherData').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    document.getElementById('weatherData').textContent = 'Error: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>
