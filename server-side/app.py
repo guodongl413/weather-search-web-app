@@ -18,9 +18,6 @@ IPINFO_API_TOKEN = os.getenv('IPINFO_API_TOKEN')
 if not TOMORROW_API_KEY or not GOOGLE_MAPS_API_KEY or not IPINFO_API_TOKEN:
     raise EnvironmentError("One or more API keys are not set. Please check your .env file.")
 
-# 确认变量已经成功加载
-print(TOMORROW_API_KEY)  # 你可以暂时打印变量，确保加载成功
-
 @app.route('/')
 def index():
     # 返回简单的欢迎信息以确认后端正常运行
@@ -28,43 +25,53 @@ def index():
 
 @app.route('/get_location', methods=['GET'])
 def get_location():
-    # 获取用户的街道、城市和州信息，或者用户选择的当前位置信息
     use_current_location = request.args.get('use_current_location', '').lower() == 'true'
     street = request.args.get('street')
     city = request.args.get('city')
     state = request.args.get('state')
 
-    # 如果用户选择了使用当前位置信息
     if use_current_location:
         # 使用 ipinfo.io 获取当前位置信息
-        ip_info_response = requests.get(f'https://ipinfo.io?token={IPINFO_API_TOKEN}')  # 使用你的 ipinfo API 令牌
+        ip_info_response = requests.get(f'https://ipinfo.io?token={IPINFO_API_TOKEN}')
         if ip_info_response.status_code != 200:
             return jsonify({'error': 'Failed to retrieve current location'}), 400
         location_data = ip_info_response.json()
-        city = location_data.get('city')
-        state = location_data.get('region')
-        if not city or not state:
-            return jsonify({'error': 'Failed to retrieve current location'}), 400
+        lat_lng = location_data.get('loc')
+        if not lat_lng:
+            return jsonify({'error': 'Failed to retrieve current location coordinates'}), 400
+
+        # 获取地理位置信息的具体地址
+        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat_lng}&key={GOOGLE_MAPS_API_KEY}"
+        geocode_response = requests.get(geocode_url)
+        if geocode_response.status_code != 200:
+            return jsonify({'error': 'Google Maps API request failed'}), 400
+        geocode_data = geocode_response.json()
+
+        if 'results' in geocode_data and geocode_data['results']:
+            formatted_address = geocode_data['results'][0]['formatted_address']
+        else:
+            return jsonify({'error': 'Unable to retrieve formatted address'}), 400
+
+        latitude, longitude = lat_lng.split(',')
     else:
         # 检查用户是否手动输入了街道、城市和州
         if not street or not city or not state:
             return jsonify({'error': 'Street, City, and State are required'}), 400
 
-    # 调用 Google Maps Geocoding API 获取纬度和经度
-    address = f"{street}, {city}, {state}"
-    geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
-    geocode_response = requests.get(geocode_url)
-    if geocode_response.status_code != 200:
-        return jsonify({'error': 'Google Maps API request failed'}), 400
-    geocode_data = geocode_response.json()
+        # 使用 Google Maps Geocoding API 获取纬度和经度
+        address = f"{street}, {city}, {state}"
+        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
+        geocode_response = requests.get(geocode_url)
+        if geocode_response.status_code != 200:
+            return jsonify({'error': 'Google Maps API request failed'}), 400
+        geocode_data = geocode_response.json()
 
-    # 检查 Google Maps API 响应是否有效
-    if 'results' not in geocode_data or not geocode_data['results']:
-        return jsonify({'error': 'Unable to geocode the address'}), 400
+        if 'results' not in geocode_data or not geocode_data['results']:
+            return jsonify({'error': 'Unable to geocode the address'}), 400
 
-    # 获取纬度和经度
-    location = geocode_data['results'][0]['geometry']['location']
-    latitude, longitude = location['lat'], location['lng']
+        location = geocode_data['results'][0]['geometry']['location']
+        latitude, longitude = location['lat'], location['lng']
+        formatted_address = address
 
     # 构建 Tomorrow.io 的 API 请求来获取天气数据
     weather_url = "https://api.tomorrow.io/v4/timelines"
@@ -94,9 +101,8 @@ def get_location():
     if 'data' not in weather_data:
         return jsonify({'error': 'Failed to retrieve weather data'}), 400
 
-    # 返回天气数据
-    return jsonify(weather_data)
+    # 返回天气数据和位置
+    return jsonify({'address': formatted_address, 'weather': weather_data})
 
 if __name__ == '__main__':
-    # 运行 Flask 应用，调试模式为 True
     app.run(debug=True)

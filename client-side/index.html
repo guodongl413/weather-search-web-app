@@ -37,14 +37,12 @@
     <script type="module">
         import config from './config.js';
 
-        function getWeather() {
-            // 获取表单数据
+        async function getWeather() {
             const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
             const street = document.getElementById('street').value;
             const city = document.getElementById('city').value;
             const state = document.getElementById('state').value;
 
-            // 构建请求 URL
             let url = `${config.API_BASE_URL}/get_location`;
             const params = new URLSearchParams();
 
@@ -56,34 +54,30 @@
                 if (state) params.append('state', state);
             }
 
-            // 完整的 URL
             url += `?${params.toString()}`;
 
-            // 发起请求
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // 提取当天的天气数据并显示在卡片上
-                    const todayWeather = data.data.timelines[0].intervals[0].values;
-                    const location = useCurrentLocation ? 'Current Location' : `${street}, ${city}, ${state}`;
-                    displayWeatherCard(location, todayWeather);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
-                });
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                const weather = data.weather.data.timelines[0].intervals[0].values;
+                const location = data.address;
+
+                displayWeatherCard(location, weather);
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
         }
 
         function displayWeatherCard(location, weather) {
-            // 创建卡片内容
             const cardContent = `
                 <div>
                     <h3>Location: ${location}</h3>
+                    <p><strong>Weather Condition:</strong> ${weather.weatherCode}</p>
                     <p><strong>Temperature:</strong> ${weather.temperature} °F</p>
                     <p><strong>Humidity:</strong> ${weather.humidity}%</p>
                     <p><strong>Pressure:</strong> ${weather.pressureSeaLevel} inHg <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-16-512.png" alt="Pressure Icon" width="20"></p>
@@ -93,13 +87,10 @@
                     <p><strong>UV Index:</strong> ${weather.uvIndex} <img src="https://cdn2.iconfinder.com/data/icons/weather-74/24/weather-24-512.png" alt="UV Index Icon" width="20"></p>
                 </div>
             `;
-
-            // 将卡片内容放入 HTML 中
             document.getElementById('weatherCard').innerHTML = cardContent;
         }
 
         function clearForm() {
-            // 清除表单中的所有输入和结果
             document.getElementById('useCurrentLocation').checked = false;
             document.getElementById('street').value = '';
             document.getElementById('city').value = '';
