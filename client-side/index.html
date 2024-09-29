@@ -4,6 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App Test</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <h1>Weather App Test</h1>
@@ -32,6 +52,8 @@
 
     <h2>Weather Data:</h2>
     <div id="weatherCard"></div>
+    <h2>Weather Forecast Table:</h2>
+    <div id="weatherTable"></div>
 
     <script src="./config.js" type="module"></script>
     <script type="module">
@@ -67,6 +89,10 @@
                 const location = data.address;
 
                 displayWeatherCard(location, weather);
+
+                // 提取未来几天的天气数据并显示在表格中
+                const weatherIntervals = data.weather.data.timelines[0].intervals;
+                displayWeatherTable(weatherIntervals);
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
@@ -90,12 +116,62 @@
             document.getElementById('weatherCard').innerHTML = cardContent;
         }
 
+        function displayWeatherTable(weatherIntervals) {
+            let tableContent = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Temp High</th>
+                            <th>Temp Low</th>
+                            <th>Wind Speed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            for (let interval of weatherIntervals) {
+                const date = new Date(interval.startTime).toLocaleDateString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
+                });
+                const weatherCode = interval.values.weatherCode;
+                const status = mapWeatherCodeToStatus(weatherCode);
+                const tempHigh = interval.values.temperatureMax;
+                const tempLow = interval.values.temperatureMin;
+                const windSpeed = interval.values.windSpeed;
+
+                tableContent += `
+                    <tr>
+                        <td>${date}</td>
+                        <td><img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}</td>
+                        <td>${tempHigh}</td>
+                        <td>${tempLow}</td>
+                        <td>${windSpeed}</td>
+                    </tr>
+                `;
+            }
+            tableContent += `</tbody></table>`;
+            document.getElementById('weatherTable').innerHTML = tableContent;
+        }
+
+        function mapWeatherCodeToStatus(weatherCode) {
+            // 根据API文档，映射weatherCode到相应的文本描述和图片
+            // 这里是示例映射，你需要根据文档进行修改
+            const weatherMap = {
+                1000: { description: "Clear", icon: "./weather-code-symbols/clear_day.svg" },
+                1100: { description: "Mostly Clear", icon: "https://github.com/Tomorrow-IO-API/tomorrow-weather-codes/tree/master/V1_icons/color/mostly_clear.png" },
+                // 其他的映射根据实际需求补充
+            };
+            return weatherMap[weatherCode] || { description: "Unknown", icon: "" };
+        }
+
         function clearForm() {
             document.getElementById('useCurrentLocation').checked = false;
             document.getElementById('street').value = '';
             document.getElementById('city').value = '';
             document.getElementById('state').value = '';
             document.getElementById('weatherCard').innerHTML = '';
+            document.getElementById('weatherTable').innerHTML = '';
         }
 
         window.getWeather = getWeather;
