@@ -11,3 +11,4 @@ __pycache__/
 
 # macOS 生成的文件
 .DS_Store
+.env
