@@ -27,6 +27,30 @@
             flex: 1;
             text-align: left;
         }
+        /* 模态对话框样式 */
+        #weatherDetailModal {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        #modalContent {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            width: 90%;
+        }
+        #closeModal {
+            float: right;
+            cursor: pointer;
+            font-size: 24px;
+        }
     </style>
 </head>
 <body>
@@ -59,9 +83,29 @@
     <h2>Weather Forecast Table:</h2>
     <div id="weatherTable"></div>
 
+    <!-- 模态对话框结构 -->
+    <div id="weatherDetailModal">
+        <div id="modalContent">
+            <span id="closeModal" onclick="closeModal()">&times;</span>
+            <h3 id="modalDate"></h3>
+            <div id="modalDetails">
+                <p id="modalCondition"></p>
+                <h2 id="modalTemp"></h2>
+                <p><strong>Precipitation:</strong> <span id="modalPrecipitation"></span></p>
+                <p><strong>Chance of Rain:</strong> <span id="modalChanceOfRain"></span></p>
+                <p><strong>Wind Speed:</strong> <span id="modalWindSpeed"></span></p>
+                <p><strong>Humidity:</strong> <span id="modalHumidity"></span></p>
+                <p><strong>Visibility:</strong> <span id="modalVisibility"></span></p>
+                <p><strong>Sunrise/Sunset:</strong> <span id="modalSunriseSunset"></span></p>
+            </div>
+        </div>
+    </div>
+
     <script src="./config.js" type="module"></script>
     <script type="module">
         import config from './config.js';
+
+        let weatherIntervals = [];
 
         async function getWeather() {
             const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
@@ -89,13 +133,16 @@
                 }
 
                 const data = await response.json();
+
+                console.log(data); // 输出获取的数据
+
                 const weather = data.weather.data.timelines[0].intervals[0].values;
                 const location = data.address;
 
                 displayWeatherCard(location, weather);
 
                 // 提取未来几天的天气数据并显示在表格中
-                const weatherIntervals = data.weather.data.timelines[0].intervals;
+                weatherIntervals = data.weather.data.timelines[0].intervals;
                 displayWeatherTable(weatherIntervals);
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
@@ -157,6 +204,42 @@
             document.getElementById('weatherTable').innerHTML = tableContent;
         }
 
+        function handleRowClick(startTime) {
+            const selectedInterval = weatherIntervals.find(interval => interval.startTime === startTime);
+
+            console.log(selectedInterval); // 输出选中的天气数据，检查所有字段
+
+            if (selectedInterval) {
+                const date = new Date(selectedInterval.startTime).toLocaleDateString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
+                });
+
+                console.log("Displaying modal for:", date); // 确认点击后是否执行到这里
+
+                document.getElementById('modalDate').innerText = date;
+                document.getElementById('modalCondition').innerText = mapWeatherCodeToStatus(selectedInterval.values.weatherCode).description;
+                document.getElementById('modalTemp').innerText = `${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F`;
+                document.getElementById('modalPrecipitation').innerText = selectedInterval.values.precipitationType || 'N/A';
+                document.getElementById('modalChanceOfRain').innerText = `${selectedInterval.values.precipitationProbability || 0}%`;
+                document.getElementById('modalWindSpeed').innerText = `${selectedInterval.values.windSpeed} mph`;
+                document.getElementById('modalHumidity').innerText = `${selectedInterval.values.humidity}%`;
+                document.getElementById('modalVisibility').innerText = `${selectedInterval.values.visibility || 'N/A'} mi`;
+                document.getElementById('modalSunriseSunset').innerText = `${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}`;
+
+                document.getElementById('weatherDetailModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('weatherDetailModal').style.display = 'none';
+        }
+
+        function formatTime(isoTime) {
+            if (!isoTime) return 'N/A';
+            const date = new Date(isoTime);
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        }
+
         function mapWeatherCodeToStatus(weatherCode) {
             const weatherMap = {
                 1000: { description: "Clear", icon: "./weather-code-symbols/clear_day.svg" },
@@ -197,10 +280,10 @@
 
         window.getWeather = getWeather;
         window.clearForm = clearForm;
+        window.handleRowClick = handleRowClick;
+        window.closeModal = closeModal;
 
-        function handleRowClick(startTime) {
-            alert(`Row clicked for date: ${startTime}`);
-        }
+
     </script>
 </body>
 </html>
