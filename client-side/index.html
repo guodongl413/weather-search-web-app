@@ -27,29 +27,10 @@
             flex: 1;
             text-align: left;
         }
-        /* 模态对话框样式 */
-        #weatherDetailModal {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        #modalContent {
-            background-color: white;
+        #dailyWeatherDetails {
+            /* margin-top: 20px; */
             padding: 20px;
-            border-radius: 5px;
-            max-width: 600px;
-            width: 90%;
-        }
-        #closeModal {
-            float: right;
-            cursor: pointer;
-            font-size: 24px;
+            
         }
     </style>
 </head>
@@ -82,24 +63,8 @@
     <div id="weatherCard"></div>
     <h2>Weather Forecast Table:</h2>
     <div id="weatherTable"></div>
-
-    <!-- 模态对话框结构 -->
-    <div id="weatherDetailModal">
-        <div id="modalContent">
-            <span id="closeModal" onclick="closeModal()">&times;</span>
-            <h3 id="modalDate"></h3>
-            <div id="modalDetails">
-                <p id="modalCondition"></p>
-                <h2 id="modalTemp"></h2>
-                <p><strong>Precipitation:</strong> <span id="modalPrecipitation"></span></p>
-                <p><strong>Chance of Rain:</strong> <span id="modalChanceOfRain"></span></p>
-                <p><strong>Wind Speed:</strong> <span id="modalWindSpeed"></span></p>
-                <p><strong>Humidity:</strong> <span id="modalHumidity"></span></p>
-                <p><strong>Visibility:</strong> <span id="modalVisibility"></span></p>
-                <p><strong>Sunrise/Sunset:</strong> <span id="modalSunriseSunset"></span></p>
-            </div>
-        </div>
-    </div>
+    <h2>Daily Weather Details:</h2>
+    <div id="dailyWeatherDetails"></div>
 
     <script src="./config.js" type="module"></script>
     <script type="module">
@@ -214,24 +179,22 @@
                     weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
                 });
 
-                console.log("Displaying modal for:", date); // 确认点击后是否执行到这里
+                const detailsContent = `
+                    <div>
+                        <h3>${date}</h3>
+                        <p><strong>Condition:</strong> ${mapWeatherCodeToStatus(selectedInterval.values.weatherCode).description}</p>
+                        <h2>${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F</h2>
+                        <p><strong>Precipitation:</strong> ${selectedInterval.values.precipitationType || 'N/A'}</p>
+                        <p><strong>Chance of Rain:</strong> ${selectedInterval.values.precipitationProbability || 0}%</p>
+                        <p><strong>Wind Speed:</strong> ${selectedInterval.values.windSpeed} mph</p>
+                        <p><strong>Humidity:</strong> ${selectedInterval.values.humidity}%</p>
+                        <p><strong>Visibility:</strong> ${selectedInterval.values.visibility || 'N/A'} mi</p>
+                        <p><strong>Sunrise/Sunset:</strong> ${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}</p>
+                    </div>
+                `;
 
-                document.getElementById('modalDate').innerText = date;
-                document.getElementById('modalCondition').innerText = mapWeatherCodeToStatus(selectedInterval.values.weatherCode).description;
-                document.getElementById('modalTemp').innerText = `${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F`;
-                document.getElementById('modalPrecipitation').innerText = selectedInterval.values.precipitationType || 'N/A';
-                document.getElementById('modalChanceOfRain').innerText = `${selectedInterval.values.precipitationProbability || 0}%`;
-                document.getElementById('modalWindSpeed').innerText = `${selectedInterval.values.windSpeed} mph`;
-                document.getElementById('modalHumidity').innerText = `${selectedInterval.values.humidity}%`;
-                document.getElementById('modalVisibility').innerText = `${selectedInterval.values.visibility || 'N/A'} mi`;
-                document.getElementById('modalSunriseSunset').innerText = `${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}`;
-
-                document.getElementById('weatherDetailModal').style.display = 'flex';
+                document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
             }
-        }
-
-        function closeModal() {
-            document.getElementById('weatherDetailModal').style.display = 'none';
         }
 
         function formatTime(isoTime) {
@@ -276,13 +239,12 @@
             document.getElementById('state').value = '';
             document.getElementById('weatherCard').innerHTML = '';
             document.getElementById('weatherTable').innerHTML = '';
+            document.getElementById('dailyWeatherDetails').innerHTML = '';
         }
 
         window.getWeather = getWeather;
         window.clearForm = clearForm;
         window.handleRowClick = handleRowClick;
-        window.closeModal = closeModal;
-
 
     </script>
 </body>
