@@ -40,10 +40,6 @@
                 new Date(data.startTime).getTime(),
                 data.values.humidity
             ]);
-            const windSpeedSeries = hourlyData.map(data => [
-                new Date(data.startTime).getTime(),
-                data.values.windSpeed
-            ]);
             const pressureSeries = hourlyData.map(data => [
                 new Date(data.startTime).getTime(),
                 data.values.pressureSeaLevel
@@ -78,7 +74,8 @@
                         align: 'center',
                         rotation: 0,
                         style: {
-                            color: Highcharts.getOptions().colors[1]
+                            // color: Highcharts.getOptions().colors[1]
+                            color: 'black'
                         }
                     },
                     title: { text: 'Date' },
@@ -89,7 +86,6 @@
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
                     max: 105,
-                    // tickInterval: 7, // 每 7°F 一个刻度
                     tickPositioner: function () {
                         let positions = [];
                         for (let i = this.min; i <= this.max; i += 7) {
@@ -99,10 +95,6 @@
                     },
                     opposite: false
                 }, { // 湿度 Y 轴
-                    title: { enabled: false },
-                    opposite: true,
-                    labels: { enabled: false }
-                }, { // 风速 Y 轴
                     title: { enabled: false },
                     opposite: true,
                     labels: { enabled: false }
@@ -140,21 +132,11 @@
                     pointWidth: 8,
                     zIndex: 1
                 }, {
-                    name: 'Wind Speed',
-                    type: 'line',
-                    data: windSpeedSeries,
-                    tooltip: { valueSuffix: ' mph' },
-                    yAxis: 2,
-                    color: '#FFC107',
-                    dashStyle: 'Solid',
-                    marker: { enabled: false },
-                    zIndex: 2
-                }, {
                     name: 'Pressure',
                     type: 'line',
                     data: pressureSeries,
                     tooltip: { valueSuffix: ' inHg' },
-                    yAxis: 3,
+                    yAxis: 2, // 更新为新的 Y 轴索引
                     color: '#8BC34A',
                     dashStyle: 'ShortDash',
                     marker: { enabled: false },
