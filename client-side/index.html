@@ -314,8 +314,14 @@
                     opposite: true,
                     labels: { enabled: false } // 不显示标签
                 }, { // Pressure Y-axis
-                    title: { enabled: false },
-                    opposite: true
+                    title: { enabled: false  },
+                    opposite: true,
+                    labels: {
+                        format: '{value} hPa',
+                        style: { color: 'green' }
+                    },
+                    tickInterval: 5, // 每 5 hPa 一个刻度
+                    gridLineWidth: 0
                 }],
                 tooltip: {
                     shared: true,
@@ -323,47 +329,45 @@
                 },
                 series: [{
                     name: 'Temperature',
-                    type: 'line', // 折线图
+                    type: 'line',
                     data: temperatures,
                     tooltip: { valueSuffix: ' °F' },
                     color: '#FF5733',
-                    dashStyle: 'Solid', // 确保为实线
-                    marker: { enabled: false }, // 禁用标记
-                    zIndex: 3 // 柱状图在较低层
+                    dashStyle: 'Solid',
+                    marker: { enabled: false },
+                    zIndex: 3
                 }, {
                     name: 'Humidity',
-                    type: 'column', // 柱状图
+                    type: 'column',
                     data: humidity,
                     tooltip: { valueSuffix: ' %' },
                     yAxis: 1,
                     color: '#33B5E5',
-                    pointWidth: 8, // 控制柱状图的宽度
-                    zIndex: 1 // 柱状图在较低层
+                    pointWidth: 8,
+                    zIndex: 1
                 }, {
                     name: 'Wind Speed',
-                    type: 'line', // 折线图
+                    type: 'line',
                     data: windSpeed,
                     tooltip: { valueSuffix: ' mph' },
                     yAxis: 2,
                     color: '#FFC107',
-                    dashStyle: 'Solid', // 确保为实线
-                    marker: { enabled: false }, // 禁用标记
-                    zIndex: 2 // 设置适当层级
+                    dashStyle: 'Solid',
+                    marker: { enabled: false },
+                    zIndex: 2
                 }, {
                     name: 'Pressure',
-                    type: 'line', // 折线图
+                    type: 'line',
                     data: pressure,
                     tooltip: { valueSuffix: ' inHg' },
                     yAxis: 3,
                     color: '#8BC34A',
-                    dashStyle: 'ShortDash', // 虚线样式
-                    marker: { enabled: false }, // 禁用标记
-                    zIndex: 2 // 设置适当层级
+                    dashStyle: 'ShortDash',
+                    marker: { enabled: false },
+                    zIndex: 2
                 }]
             });
         }
-
-
 
         function mapPrecipitationType(precipitationType) {
             const precipitationMap = {
