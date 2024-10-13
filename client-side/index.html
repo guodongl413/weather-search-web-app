@@ -31,6 +31,8 @@
             padding: 20px;
         }
     </style>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 <body>
     <h1>Weather App Test</h1>
@@ -63,6 +65,12 @@
     <div id="weatherTable"></div>
     <h2>Daily Weather Details:</h2>
     <div id="dailyWeatherDetails"></div>
+    <h2>Weather Charts:</h2>
+    <button id="toggleChartsBtn" onclick="toggleCharts()">Show Charts</button>
+    <div id="chartsContainer" style="display: none;">
+        <div id="temperatureRangeChart" style="width: 100%; height: 400px;"></div>
+        <div id="hourlyWeatherChart" style="width: 100%; height: 400px;"></div>
+    </div>
 
     <script src="./config.js" type="module"></script>
     <script type="module">
@@ -189,6 +197,9 @@
                 }
                 const data = await response.json();
                 console.log('Weather Data:', data);
+
+                renderTemperatureRangeChart(data.daily.data.timelines[0].intervals);
+                renderHourlyWeatherChart(data.hourly.data.timelines[0].intervals);
             } catch (error) {
                 console.error('Error fetching weather data:', error);
             }
@@ -228,6 +239,116 @@
                 document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
             }
         }
+
+        function toggleCharts() {
+            const chartsContainer = document.getElementById('chartsContainer');
+            const toggleBtn = document.getElementById('toggleChartsBtn');
+            
+            if (chartsContainer.style.display === 'none') {
+                chartsContainer.style.display = 'block';
+                toggleBtn.textContent = 'Hide Charts';
+            } else {
+                chartsContainer.style.display = 'none';
+                toggleBtn.textContent = 'Show Charts';
+            }
+        }
+
+        function renderTemperatureRangeChart(dailyData) {
+            const categories = dailyData.map(data => 
+                new Date(data.startTime).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+            );
+            const tempRanges = dailyData.map(data => [data.values.temperatureMin, data.values.temperatureMax]);
+
+            Highcharts.chart('temperatureRangeChart', {
+                chart: { type: 'arearange' },
+                title: { text: 'Temperature Range (Next 5 Days)' },
+                xAxis: { categories },
+                yAxis: { title: { text: 'Temperature (°F)' } },
+                tooltip: { shared: true },
+                series: [{
+                    name: 'Temperature Range',
+                    data: tempRanges
+                }]
+            });
+        }
+
+        // 渲染逐小时天气图表
+        function renderHourlyWeatherChart(hourlyData) {
+            const categories = hourlyData.map(data =>
+                new Date(data.startTime).toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true 
+                })
+            );
+
+            const temperatures = hourlyData.map(data => data.values.temperature);
+            const humidity = hourlyData.map(data => data.values.humidity);
+            const windSpeed = hourlyData.map(data => data.values.windSpeed);
+            const pressure = hourlyData.map(data => data.values.pressureSeaLevel);
+
+            Highcharts.chart('hourlyWeatherChart', {
+                chart: {
+                    scrollablePlotArea: { minWidth: 600 }
+                },
+                title: {
+                    text: 'Hourly Weather Forecast (Next 5 Days)'
+                },
+                xAxis: {
+                    categories,
+                    tickInterval: 6, // 每 6 小时显示一个刻度
+                    title: { text: 'Time' }
+                },
+                yAxis: [{ // Temperature Y-axis
+                    title: { text: 'Temperature (°F)' },
+                    min: 0, // 从 0°F 开始
+                    opposite: false
+                }, { // Humidity Y-axis
+                    title: { text: 'Humidity (%)' },
+                    opposite: true
+                }, { // Wind Speed Y-axis
+                    title: { text: 'Wind Speed (mph)' },
+                    opposite: true
+                }, { // Pressure Y-axis
+                    title: { text: 'Pressure (inHg)' },
+                    opposite: true
+                }],
+                tooltip: {
+                    shared: true,
+                    valueDecimals: 2
+                },
+                series: [{
+                    name: 'Temperature',
+                    type: 'line', // 折线图
+                    data: temperatures,
+                    tooltip: { valueSuffix: ' °F' },
+                    color: '#FF5733'
+                }, {
+                    name: 'Humidity',
+                    type: 'column', // 柱状图
+                    data: humidity,
+                    tooltip: { valueSuffix: ' %' },
+                    yAxis: 1,
+                    color: '#33B5E5'
+                }, {
+                    name: 'Wind Speed',
+                    type: 'line', // 折线图
+                    data: windSpeed,
+                    tooltip: { valueSuffix: ' mph' },
+                    yAxis: 2,
+                    color: '#FFC107'
+                }, {
+                    name: 'Pressure',
+                    type: 'line', // 折线图
+                    data: pressure,
+                    tooltip: { valueSuffix: ' inHg' },
+                    yAxis: 3,
+                    color: '#8BC34A'
+                }]
+            });
+        }
+
+
 
         function mapPrecipitationType(precipitationType) {
             const precipitationMap = {
@@ -288,6 +409,7 @@
         window.getWeather = getWeather;
         window.clearForm = clearForm;
         window.handleRowClick = handleRowClick;
+        window.toggleCharts = toggleCharts;
 
     </script>
 </body>
