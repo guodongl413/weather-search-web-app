@@ -81,7 +81,8 @@
                     opposite: true,
                     gridLineWidth: 0
                 }],
-                yAxis: [{ // 温度 Y 轴（左侧）
+                yAxis: [{
+                    // 温度 Y 轴（左侧）
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
                     max: 105,
@@ -93,20 +94,22 @@
                         return positions;
                     },
                     opposite: false
-                }, { // 湿度 Y 轴（右侧） - 隐藏刻度和标签
+                }, {
+                    // 湿度 Y 轴（右侧） - 隐藏刻度和标签
                     title: { text: 'Humidity (%)', enabled: false },
                     opposite: true,
                     labels: {
                         enabled: false // 隐藏标签
                     },
                     tickWidth: 0, // 隐藏刻度线
-                    gridLineWidth: 0 // 可选：隐藏网格线
-                }, { // 压力 Y 轴（右侧） - 显示刻度和标签
+                    gridLineWidth: 0 // 隐藏网格线
+                }, {
+                    // 压力 Y 轴（右侧） - 仅显示平均值的一个刻度
                     title: { text: 'Pressure (inHg)' },
                     opposite: true,
                     labels: {
                         format: '{value} inHg',
-                        style: { color: 'green' }
+                        style: { color: '#FFB300' }
                     },
                     tickInterval: 1, // 每 1 inHg 一个刻度
                     gridLineWidth: 0
@@ -141,16 +144,13 @@
                     data: pressureSeries,
                     tooltip: { valueSuffix: ' inHg' },
                     yAxis: 2, // 分配给右侧压力 Y 轴
-                    color: '#8BC34A',
+                    color: '#FFB300', // 将压力系列颜色更改为更深的黄色
                     dashStyle: 'ShortDash',
                     marker: { enabled: false },
                     zIndex: 2
                 }],
                 legend: {
-                    // layout: 'vertical',
-                    // align: 'right',
-                    // verticalAlign: 'middle'
-                    enabled: false
+                    enabled: false // 隐藏图例
                 },
                 responsive: {
                     rules: [{
