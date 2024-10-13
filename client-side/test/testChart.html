@@ -74,15 +74,14 @@
                         align: 'center',
                         rotation: 0,
                         style: {
-                            // color: Highcharts.getOptions().colors[1]
-                            color: 'black'
+                            color: 'black' // 将颜色设置为黑色
                         }
                     },
                     title: { text: 'Date' },
                     opposite: true,
                     gridLineWidth: 0
                 }],
-                yAxis: [{ // 温度 Y 轴
+                yAxis: [{ // 温度 Y 轴（左侧）
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
                     max: 105,
@@ -94,11 +93,15 @@
                         return positions;
                     },
                     opposite: false
-                }, { // 湿度 Y 轴
-                    title: { enabled: false },
+                }, { // 湿度 Y 轴（右侧） - 隐藏刻度和标签
+                    title: { text: 'Humidity (%)', enabled: false },
                     opposite: true,
-                    labels: { enabled: false }
-                }, { // 气压 Y 轴
+                    labels: {
+                        enabled: false // 隐藏标签
+                    },
+                    tickWidth: 0, // 隐藏刻度线
+                    gridLineWidth: 0 // 可选：隐藏网格线
+                }, { // 压力 Y 轴（右侧） - 显示刻度和标签
                     title: { text: 'Pressure (inHg)' },
                     opposite: true,
                     labels: {
@@ -121,13 +124,14 @@
                     color: '#FF5733',
                     dashStyle: 'Solid',
                     marker: { enabled: false },
-                    zIndex: 3
+                    zIndex: 3,
+                    yAxis: 0 // 分配给左侧温度 Y 轴
                 }, {
                     name: 'Humidity',
                     type: 'column',
                     data: humiditySeries,
                     tooltip: { valueSuffix: ' %' },
-                    yAxis: 1,
+                    yAxis: 1, // 分配给右侧湿度 Y 轴
                     color: '#33B5E5',
                     pointWidth: 8,
                     zIndex: 1
@@ -136,16 +140,17 @@
                     type: 'line',
                     data: pressureSeries,
                     tooltip: { valueSuffix: ' inHg' },
-                    yAxis: 2, // 更新为新的 Y 轴索引
+                    yAxis: 2, // 分配给右侧压力 Y 轴
                     color: '#8BC34A',
                     dashStyle: 'ShortDash',
                     marker: { enabled: false },
                     zIndex: 2
                 }],
                 legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'middle'
+                    // layout: 'vertical',
+                    // align: 'right',
+                    // verticalAlign: 'middle'
+                    enabled: false
                 },
                 responsive: {
                     rules: [{
