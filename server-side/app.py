@@ -132,7 +132,7 @@ def weather_data():
     ])
 
     hourly_fields = ",".join([
-        "temperature", "windSpeed", "humidity", "pressureSeaLevel"
+        "temperature", "windSpeed", "windDirection", "humidity", "pressureSeaLevel"
     ])
 
     daily_data = fetch_weather_data(latitude, longitude, "1d", daily_fields)
