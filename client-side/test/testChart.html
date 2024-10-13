@@ -2,168 +2,154 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Chart Test</title>
+    <title>Hourly Weather Chart Test</title>
+    <!-- 引入 Highcharts 库 -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        #container {
+        /* 可选：图表容器的样式 */
+        #hourlyWeatherChart {
             width: 100%;
-            max-width: 900px;
+            height: 600px;
             margin: 0 auto;
         }
     </style>
 </head>
 <body>
-    <h1>Weather Chart Test</h1>
-    <div id="container"></div>
+
+    <!-- 图表容器 -->
+    <div id="hourlyWeatherChart"></div>
 
     <script>
-        // 解析 JSON 数据并调用渲染图表函数
-        function renderWeatherChart(hourlyData, container) {
-            const temperatures = [];
-            const humidity = [];
-            const windSpeed = [];
-            const pressure = [];
-            const categories = [];
-            const dates = [];
+        /**
+         * 渲染逐小时天气图表
+         * @param {Array} hourlyData - 小时级别的天气数据数组
+         */
+        function renderHourlyWeatherChart(hourlyData) {
+            // 确保 hourlyData 是一个数组
+            if (!Array.isArray(hourlyData)) {
+                console.error('hourlyData 应该是一个包含间隔数据的数组。');
+                return;
+            }
 
-            // 遍历 JSON 数据中的时间序列，提取所需数据
-            hourlyData.forEach((interval) => {
-                const date = new Date(interval.startTime);
-                const timeLabel = date.toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                });
+            const categories = hourlyData.map(data =>
+                new Date(data.startTime).toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true 
+                })
+            );
 
-                categories.push(timeLabel);
+            const temperatures = hourlyData.map(data => data.values.temperature);
+            const humidity = hourlyData.map(data => data.values.humidity);
+            const windSpeed = hourlyData.map(data => data.values.windSpeed);
+            const pressure = hourlyData.map(data => data.values.pressureSeaLevel);
 
-                if (timeLabel === '00:00') {
-                    dates.push(date.toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric'
-                    }));
-                }
-
-                temperatures.push(interval.values.temperature);
-                humidity.push(interval.values.humidity);
-                windSpeed.push(interval.values.windSpeed);
-                pressure.push(interval.values.pressureSeaLevel);
-            });
-
-            // 使用 Highcharts 渲染图表
-            Highcharts.chart(container, {
+            Highcharts.chart('hourlyWeatherChart', {
                 chart: {
-                    scrollablePlotArea: { minWidth: 720 }
+                    scrollablePlotArea: { minWidth: 600 }
                 },
                 title: {
                     text: 'Hourly Weather Forecast (Next 5 Days)'
                 },
-                xAxis: [
-                    {
-                        categories, // 底部时间轴
-                        tickInterval: 6, // 每 6 小时一个刻度
-                        labels: {
-                            formatter: function () {
-                                const value = this.value;
-                                return ['00:00', '06:00', '12:00', '18:00'].includes(value) ? value : '';
-                            },
-                            rotation: -45,
-                            align: 'right'
-                        },
-                        title: { text: 'Time' },
-                        crosshair: true
+                xAxis: {
+                    categories: categories,
+                    tickInterval: 6, // 每 6 小时显示一个刻度
+                    title: { text: 'Time' }
+                },
+                yAxis: [{ // 温度 Y 轴
+                    title: { text: 'Temperature (°F)' },
+                    min: 0, // 从 0°F 开始
+                    max: 105,
+                    tickInterval: 7, // 每 7°F 一个刻度
+                    opposite: false
+                }, { // 湿度 Y 轴
+                    title: { enabled: false },
+                    opposite: true,
+                    labels: { enabled: false }
+                }, { // 风速 Y 轴
+                    title: { enabled: false },
+                    opposite: true,
+                    labels: { enabled: false }
+                }, { // 气压 Y 轴
+                    title: { text: 'Pressure (inHg)' },
+                    opposite: true,
+                    labels: {
+                        format: '{value} inHg',
+                        style: { color: 'green' }
                     },
-                    {
-                        categories: dates, // 顶部日期轴
-                        linkedTo: 0,
-                        tickInterval: 1, // 每天显示一个日期
-                        opposite: true,
-                        labels: {
-                            align: 'center',
-                            style: { fontSize: '12px', fontWeight: 'bold' }
-                        }
-                    }
-                ],
-                yAxis: [
-                    {
-                        title: { text: 'Temperature (°F)' },
-                        min: 0,
-                        max: 105,
-                        tickInterval: 7
-                    },
-                    {
-                        title: { enabled: false },
-                        labels: { enabled: false },
-                        opposite: true
-                    },
-                    {
-                        title: { enabled: false },
-                        labels: { enabled: false },
-                        opposite: true
-                    },
-                    {
-                        title: { enabled: false },
-                        labels: { format: '{value} hPa', style: { color: 'green' } },
-                        tickInterval: 5,
-                        opposite: true
-                    }
-                ],
+                    tickInterval: 1, // 每 1 inHg 一个刻度
+                    gridLineWidth: 0
+                }],
                 tooltip: {
                     shared: true,
                     valueDecimals: 2
                 },
-                series: [
-                    {
-                        name: 'Temperature',
-                        type: 'line',
-                        data: temperatures,
-                        tooltip: { valueSuffix: ' °F' },
-                        color: '#FF5733',
-                        marker: { enabled: false }
-                    },
-                    {
-                        name: 'Humidity',
-                        type: 'column',
-                        data: humidity,
-                        tooltip: { valueSuffix: ' %' },
-                        color: '#33B5E5',
-                        pointWidth: 8
-                    },
-                    {
-                        name: 'Wind Speed',
-                        type: 'line',
-                        data: windSpeed,
-                        tooltip: { valueSuffix: ' mph' },
-                        color: '#FFC107',
-                        marker: { enabled: false }
-                    },
-                    {
-                        name: 'Pressure',
-                        type: 'line',
-                        data: pressure,
-                        tooltip: { valueSuffix: ' hPa' },
-                        dashStyle: 'ShortDash',
-                        color: '#8BC34A',
-                        marker: { enabled: false }
-                    }
-                ]
+                series: [{
+                    name: 'Temperature',
+                    type: 'line',
+                    data: temperatures,
+                    tooltip: { valueSuffix: ' °F' },
+                    color: '#FF5733',
+                    dashStyle: 'Solid',
+                    marker: { enabled: false },
+                    zIndex: 3
+                }, {
+                    name: 'Humidity',
+                    type: 'column',
+                    data: humidity,
+                    tooltip: { valueSuffix: ' %' },
+                    yAxis: 1,
+                    color: '#33B5E5',
+                    pointWidth: 8,
+                    zIndex: 1
+                }, {
+                    name: 'Wind Speed',
+                    type: 'line',
+                    data: windSpeed,
+                    tooltip: { valueSuffix: ' mph' },
+                    yAxis: 2,
+                    color: '#FFC107',
+                    dashStyle: 'Solid',
+                    marker: { enabled: false },
+                    zIndex: 2
+                }, {
+                    name: 'Pressure',
+                    type: 'line',
+                    data: pressure,
+                    tooltip: { valueSuffix: ' inHg' },
+                    yAxis: 3,
+                    color: '#8BC34A',
+                    dashStyle: 'ShortDash',
+                    marker: { enabled: false },
+                    zIndex: 2
+                }]
             });
         }
 
-        // 从 JSON 文件加载数据并调用渲染函数
-        fetch('weatherData.json')
-            .then(response => response.json())
-            .then(data => {
-                const hourlyData = data.hourly.data.timelines[0].intervals;
-                renderWeatherChart(hourlyData, 'container');
-            })
-            .catch(error => console.error('Error loading data:', error));
+        /**
+         * 从 weatherData.json 加载数据并渲染图表
+         */
+        async function loadAndRenderChart() {
+            try {
+                const response = await fetch('weatherData.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! 状态: ${response.status}`);
+                }
+                const weatherData = await response.json();
+
+                // 提取小时级别的间隔数据
+                const hourlyIntervals = weatherData.hourly.data.timelines[0].intervals;
+
+                // 调用渲染函数
+                renderHourlyWeatherChart(hourlyIntervals);
+            } catch (error) {
+                console.error('加载或解析 JSON 数据时出错:', error);
+            }
+        }
+
+        // 调用函数以加载数据并渲染图表
+        loadAndRenderChart();
     </script>
+
 </body>
 </html>
