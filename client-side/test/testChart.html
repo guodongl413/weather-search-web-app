@@ -89,7 +89,14 @@
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
                     max: 105,
-                    tickInterval: 7, // 每 7°F 一个刻度
+                    // tickInterval: 7, // 每 7°F 一个刻度
+                    tickPositioner: function () {
+                        let positions = [];
+                        for (let i = this.min; i <= this.max; i += 7) {
+                            positions.push(i);
+                        }
+                        return positions;
+                    },
                     opposite: false
                 }, { // 湿度 Y 轴
                     title: { enabled: false },
