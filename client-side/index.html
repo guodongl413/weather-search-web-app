@@ -274,98 +274,147 @@
 
         // 渲染逐小时天气图表
         function renderHourlyWeatherChart(hourlyData) {
-            const categories = hourlyData.map(data =>
-                new Date(data.startTime).toLocaleTimeString('en-US', { 
-                    hour: 'numeric', 
-                    minute: 'numeric', 
-                    hour12: true 
-                })
-            );
+            // 确保 hourlyData 是一个数组
+            if (!Array.isArray(hourlyData)) {
+                console.error('hourlyData 应该是一个包含间隔数据的数组。');
+                return;
+            }
 
-            const temperatures = hourlyData.map(data => data.values.temperature);
-            const humidity = hourlyData.map(data => data.values.humidity);
-            const windSpeed = hourlyData.map(data => data.values.windSpeed);
-            const pressure = hourlyData.map(data => data.values.pressureSeaLevel);
+            // 将数据转换为 [timestamp, value] 格式
+            const temperatureSeries = hourlyData.map(data => [
+                new Date(data.startTime).getTime(),
+                data.values.temperature
+            ]);
+            const humiditySeries = hourlyData.map(data => [
+                new Date(data.startTime).getTime(),
+                data.values.humidity
+            ]);
+            const pressureSeries = hourlyData.map(data => [
+                new Date(data.startTime).getTime(),
+                data.values.pressureSeaLevel
+            ]);
 
             Highcharts.chart('hourlyWeatherChart', {
                 chart: {
-                    scrollablePlotArea: { minWidth: 600 }
+                    zoomType: 'x'
                 },
                 title: {
                     text: 'Hourly Weather Forecast (Next 5 Days)'
                 },
-                xAxis: {
-                    categories,
-                    tickInterval: 6, // 每 6 小时显示一个刻度
-                    title: { text: 'Time' }
-                },
-                yAxis: [{ // Temperature Y-axis
+                xAxis: [{
+                    type: 'datetime',
+                    // 底部 x 轴：显示时间（6、12、18、00 点）
+                    tickInterval: 6 * 3600 * 1000, // 每6小时一个刻度
+                    labels: {
+                        format: '{value:%H:%M}',
+                        align: 'center'
+                    },
+                    title: { text: 'Time' },
+                    gridLineWidth: 1,
+                    // 放在底部
+                    opposite: false
+                }, {
+                    type: 'datetime',
+                    // 顶部 x 轴：显示日期，仅在00点时显示
+                    linkedTo: 0, // 与底部 x 轴关联
+                    tickInterval: 24 * 3600 * 1000, // 每天一个刻度
+                    labels: {
+                        format: '{value:%b %d}',
+                        align: 'center',
+                        rotation: 0,
+                        style: {
+                            color: 'black' // 将颜色设置为黑色
+                        }
+                    },
+                    title: { text: 'Date' },
+                    opposite: true,
+                    gridLineWidth: 0
+                }],
+                yAxis: [{
+                    // 温度 Y 轴（左侧）
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
                     max: 105,
-                    tickInterval: 7, // 每 7°F 一个刻度
+                    tickPositioner: function () {
+                        let positions = [];
+                        for (let i = this.min; i <= this.max; i += 7) {
+                            positions.push(i);
+                        }
+                        return positions;
+                    },
                     opposite: false
-                }, { // Humidity Y-axis
-                    title: { enabled: false },
-                    opposite: true,
-                    labels: { enabled: false } // 不显示标签
-                }, { // Wind Speed Y-axis
-                    title: { enabled: false },
-                    opposite: true,
-                    labels: { enabled: false } // 不显示标签
-                }, { // Pressure Y-axis
-                    title: { enabled: false  },
+                }, {
+                    // 湿度 Y 轴（右侧） - 隐藏刻度和标签
+                    title: { text: 'Humidity (%)', enabled: false },
                     opposite: true,
                     labels: {
-                        format: '{value} hPa',
-                        style: { color: 'green' }
+                        enabled: false // 隐藏标签
                     },
-                    tickInterval: 5, // 每 5 hPa 一个刻度
+                    tickWidth: 0, // 隐藏刻度线
+                    gridLineWidth: 0 // 隐藏网格线
+                }, {
+                    // 压力 Y 轴（右侧） - 仅显示平均值的一个刻度
+                    title: { text: 'Pressure (inHg)' },
+                    opposite: true,
+                    labels: {
+                        format: '{value} inHg',
+                        style: { color: '#FFB300' }
+                    },
+                    tickInterval: 1, // 每 1 inHg 一个刻度
                     gridLineWidth: 0
                 }],
                 tooltip: {
                     shared: true,
+                    xDateFormat: '%Y-%m-%d %H:%M',
                     valueDecimals: 2
                 },
                 series: [{
                     name: 'Temperature',
                     type: 'line',
-                    data: temperatures,
+                    data: temperatureSeries,
                     tooltip: { valueSuffix: ' °F' },
                     color: '#FF5733',
                     dashStyle: 'Solid',
                     marker: { enabled: false },
-                    zIndex: 3
+                    zIndex: 3,
+                    yAxis: 0 // 分配给左侧温度 Y 轴
                 }, {
                     name: 'Humidity',
                     type: 'column',
-                    data: humidity,
+                    data: humiditySeries,
                     tooltip: { valueSuffix: ' %' },
-                    yAxis: 1,
+                    yAxis: 1, // 分配给右侧湿度 Y 轴
                     color: '#33B5E5',
                     pointWidth: 8,
                     zIndex: 1
                 }, {
-                    name: 'Wind Speed',
-                    type: 'line',
-                    data: windSpeed,
-                    tooltip: { valueSuffix: ' mph' },
-                    yAxis: 2,
-                    color: '#FFC107',
-                    dashStyle: 'Solid',
-                    marker: { enabled: false },
-                    zIndex: 2
-                }, {
                     name: 'Pressure',
                     type: 'line',
-                    data: pressure,
+                    data: pressureSeries,
                     tooltip: { valueSuffix: ' inHg' },
-                    yAxis: 3,
-                    color: '#8BC34A',
+                    yAxis: 2, // 分配给右侧压力 Y 轴
+                    color: '#FFB300', // 将压力系列颜色更改为更深的黄色
                     dashStyle: 'ShortDash',
                     marker: { enabled: false },
                     zIndex: 2
-                }]
+                }],
+                legend: {
+                    enabled: false // 隐藏图例
+                },
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 800
+                        },
+                        chartOptions: {
+                            legend: {
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom'
+                            }
+                        }
+                    }]
+                }
             });
         }
 
