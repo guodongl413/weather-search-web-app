@@ -302,15 +302,19 @@
                 yAxis: [{ // Temperature Y-axis
                     title: { text: 'Temperature (°F)' },
                     min: 0, // 从 0°F 开始
+                    max: 105,
+                    tickInterval: 7, // 每 7°F 一个刻度
                     opposite: false
                 }, { // Humidity Y-axis
-                    title: { text: 'Humidity (%)' },
-                    opposite: true
+                    title: { enabled: false },
+                    opposite: true,
+                    labels: { enabled: false } // 不显示标签
                 }, { // Wind Speed Y-axis
-                    title: { text: 'Wind Speed (mph)' },
-                    opposite: true
+                    title: { enabled: false },
+                    opposite: true,
+                    labels: { enabled: false } // 不显示标签
                 }, { // Pressure Y-axis
-                    title: { text: 'Pressure (inHg)' },
+                    title: { enabled: false },
                     opposite: true
                 }],
                 tooltip: {
@@ -322,28 +326,39 @@
                     type: 'line', // 折线图
                     data: temperatures,
                     tooltip: { valueSuffix: ' °F' },
-                    color: '#FF5733'
+                    color: '#FF5733',
+                    dashStyle: 'Solid', // 确保为实线
+                    marker: { enabled: false }, // 禁用标记
+                    zIndex: 3 // 柱状图在较低层
                 }, {
                     name: 'Humidity',
                     type: 'column', // 柱状图
                     data: humidity,
                     tooltip: { valueSuffix: ' %' },
                     yAxis: 1,
-                    color: '#33B5E5'
+                    color: '#33B5E5',
+                    pointWidth: 8, // 控制柱状图的宽度
+                    zIndex: 1 // 柱状图在较低层
                 }, {
                     name: 'Wind Speed',
                     type: 'line', // 折线图
                     data: windSpeed,
                     tooltip: { valueSuffix: ' mph' },
                     yAxis: 2,
-                    color: '#FFC107'
+                    color: '#FFC107',
+                    dashStyle: 'Solid', // 确保为实线
+                    marker: { enabled: false }, // 禁用标记
+                    zIndex: 2 // 设置适当层级
                 }, {
                     name: 'Pressure',
                     type: 'line', // 折线图
                     data: pressure,
                     tooltip: { valueSuffix: ' inHg' },
                     yAxis: 3,
-                    color: '#8BC34A'
+                    color: '#8BC34A',
+                    dashStyle: 'ShortDash', // 虚线样式
+                    marker: { enabled: false }, // 禁用标记
+                    zIndex: 2 // 设置适当层级
                 }]
             });
         }
