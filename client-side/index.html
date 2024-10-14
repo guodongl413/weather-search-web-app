@@ -14,7 +14,7 @@
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 <body>
-    <!-- <h1>Weather App Test</h1> -->
+    <!-- 表单部分 -->
     <div class="form-container">
         <div class="form-header">
             <h1>Weather Search</h1>
@@ -36,7 +36,6 @@
             </select>
 
             <div class="location-checkbox">
-                <!-- <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation"> -->
                 <label for="useCurrentLocation">Want us to auto-detect your location? Check here</label>
                 <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation">
             </div>
@@ -48,12 +47,16 @@
         </form>
     </div>
 
-    <!-- <h2>Weather Data:</h2> -->
+    <!-- 天气卡片 -->
     <div id="weatherCard" class="hidden"></div>
-    <!-- <h2>Weather Forecast Table:</h2> -->
+
+    <!-- 天气预报表格 -->
     <div id="weatherTable" class="hidden"></div>
-    <!-- <h2>Daily Weather Details:</h2> -->
+
+    <!-- 每日天气详情 -->
     <div id="dailyWeatherDetails" class="hidden"></div>
+
+    <!-- 天气图表部分 -->
     <div id="chartsHeader" class="hidden">
         <h2>Weather Charts:</h2>
         <button id="toggleChartsBtn" onclick="toggleCharts()">Show Charts</button>
@@ -63,7 +66,10 @@
         <div id="hourlyWeatherChart" style="width: 100%; height: 400px;"></div>
     </div>
 
+    <!-- 引入 config.js -->
     <script src="./config.js" type="module"></script>
+
+    <!-- 主脚本 -->
     <script type="module">
         import config from './config.js';
         import weatherMap from './weatherCodes.js';
@@ -71,7 +77,7 @@
         let latitude, longitude;  
         let weatherIntervals = [];
 
-        // References to Highcharts instances
+        // Highcharts 实例引用
         let temperatureChart = null;
         let hourlyChart = null;
 
@@ -95,7 +101,7 @@
             url += `?${params.toString()}`;
 
             try {
-                // const response = await fetch(url);
+                // 模拟请求数据
                 const response = await fetch('./test/dailyData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -103,7 +109,7 @@
 
                 const data = await response.json();
 
-                console.log(data); // Output fetched data
+                console.log(data); // 输出获取的数据
 
                 const weather = data.weather.data.timelines[0].intervals[0].values;
                 const location = data.address;
@@ -112,17 +118,18 @@
 
                 displayWeatherCard(location, weather);
 
-                // Extract future weather data and display in table
+                // 提取未来天气数据并显示在表格中
                 weatherIntervals = data.weather.data.timelines[0].intervals;
                 displayWeatherTable(weatherIntervals);
 
-                // Show weatherCard and weatherTable, hide other sections
+                // 显示 weatherCard 和 weatherTable，隐藏其他部分
                 document.getElementById('weatherCard').classList.remove('hidden');
                 document.getElementById('weatherTable').classList.remove('hidden');
                 document.getElementById('dailyWeatherDetails').classList.add('hidden');
+                
+                // 确保 chartsHeader 和 chartsContainer 保持隐藏状态
+                document.getElementById('chartsHeader').classList.add('hidden');
                 document.getElementById('chartsContainer').classList.add('hidden');
-                document.getElementById('toggleChartsBtn').classList.add('hidden');
-
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
@@ -130,12 +137,12 @@
                 document.getElementById('weatherTable').classList.add('hidden');
                 document.getElementById('dailyWeatherDetails').classList.add('hidden');
                 document.getElementById('chartsContainer').classList.add('hidden');
+                document.getElementById('chartsHeader').classList.add('hidden');
                 document.getElementById('toggleChartsBtn').classList.add('hidden');
             }
         }
 
         function displayWeatherCard(location, weather) {
-
             const weatherCode = weather.weatherCode;
             const status = mapWeatherCodeToStatus(weatherCode);
 
@@ -231,7 +238,7 @@
         async function fetchWeatherData(lat, lng) {
             if (!lat || !lng) {
                 console.error('Invalid latitude or longitude:', lat, lng);
-                return;  // If invalid, return directly
+                return;  // 如果无效，直接返回
             }
 
             let url = `${config.API_BASE_URL}/weather_data`;
@@ -241,7 +248,7 @@
             });
 
             try {
-                // const response = await fetch(`${url}?${params.toString()}`);
+                // 模拟请求数据
                 const response = await fetch('./test/weatherData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -256,14 +263,15 @@
             }
         }
 
-        function handleRowClick(startTime) {
-            fetchWeatherData(latitude, longitude);
+        async function handleRowClick(startTime) {
+            // 获取天气数据
+            await fetchWeatherData(latitude, longitude);
 
             const selectedInterval = weatherIntervals.find(
                 (interval) => interval.startTime === startTime
             );
 
-            console.log(selectedInterval); // Output selected weather data for debugging
+            console.log(selectedInterval); // 输出选中的天气数据以供调试
 
             if (selectedInterval) {
                 const date = new Date(selectedInterval.startTime).toLocaleDateString(
@@ -325,15 +333,16 @@
 
                 document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
 
-                // 显示 dailyWeatherDetails 和 chartsContainer，隐藏其他部分
+                // 显示 dailyWeatherDetails 和 chartsHeader，隐藏其他部分
                 document.getElementById('weatherCard').classList.add('hidden');
                 document.getElementById('weatherTable').classList.add('hidden');
                 document.getElementById('dailyWeatherDetails').classList.remove('hidden');
                 
-                // 显示 chartsHeader 和 chartsContainer
+                // 显示 chartsHeader，并确保 chartsContainer 保持隐藏状态
                 document.getElementById('chartsHeader').classList.remove('hidden');
-                document.getElementById('chartsContainer').classList.remove('hidden');
-                document.getElementById('toggleChartsBtn').classList.remove('hidden');
+                document.getElementById('chartsContainer').classList.add('hidden'); // 保持隐藏
+                // 确保按钮文本为 "Show Charts"
+                document.getElementById('toggleChartsBtn').textContent = 'Show Charts';
             }
         }
 
@@ -341,17 +350,17 @@
             const chartsContainer = document.getElementById('chartsContainer');
             const toggleBtn = document.getElementById('toggleChartsBtn');
             
-            if (chartsContainer.style.display === 'none' || chartsContainer.style.display === '') {
-                chartsContainer.style.display = 'block';
+            if (chartsContainer.classList.contains('hidden')) {
+                chartsContainer.classList.remove('hidden');
                 toggleBtn.textContent = 'Hide Charts';
             } else {
-                chartsContainer.style.display = 'none';
+                chartsContainer.classList.add('hidden');
                 toggleBtn.textContent = 'Show Charts';
             }
         }
 
         function renderTemperatureRangeChart(dailyData) {
-            // Destroy existing chart if it exists
+            // 销毁现有图表（如果存在）
             if (temperatureChart) {
                 temperatureChart.destroy();
             }
@@ -374,20 +383,20 @@
             });
         }
 
-        // Render hourly weather chart
+        // 渲染每小时天气图表
         function renderHourlyWeatherChart(hourlyData) {
-            // Destroy existing chart if it exists
+            // 销毁现有图表（如果存在）
             if (hourlyChart) {
                 hourlyChart.destroy();
             }
 
-            // Ensure hourlyData is an array
+            // 确保 hourlyData 是数组
             if (!Array.isArray(hourlyData)) {
                 console.error('hourlyData should be an array of interval data.');
                 return;
             }
 
-            // Convert data to [timestamp, value] format
+            // 转换数据为 [timestamp, value] 格式
             const temperatureSeries = hourlyData.map(data => [
                 new Date(data.startTime).getTime(),
                 data.values.temperature
@@ -411,7 +420,7 @@
                 xAxis: [{
                     type: 'datetime',
                     // Bottom x-axis: show time (6, 12, 18, 00 hours)
-                    tickInterval: 6 * 3600 * 1000, // Every 6 hours
+                    tickInterval: 6 * 3600 * 1000, // 每6小时一个刻度
                     labels: {
                         format: '{value:%H:%M}',
                         align: 'center'
@@ -424,13 +433,13 @@
                     type: 'datetime',
                     // Top x-axis: show date, only at 00 hours
                     linkedTo: 0, // Linked to bottom x-axis
-                    tickInterval: 24 * 3600 * 1000, // Every day
+                    tickInterval: 24 * 3600 * 1000, // 每天一个刻度
                     labels: {
                         format: '{value:%b %d}',
                         align: 'center',
                         rotation: 0,
                         style: {
-                            color: 'black' // Set color to black
+                            color: 'black' // 设置颜色为黑色
                         }
                     },
                     title: { text: 'Date' },
@@ -440,7 +449,7 @@
                 yAxis: [{
                     // Temperature Y-axis (left)
                     title: { text: 'Temperature (°F)' },
-                    min: 0, // Start from 0°F
+                    min: 0, // 从0°F开始
                     max: 105,
                     tickPositioner: function () {
                         let positions = [];
@@ -455,10 +464,10 @@
                     title: { text: 'Humidity (%)', enabled: false },
                     opposite: true,
                     labels: {
-                        enabled: false // Hide labels
+                        enabled: false // 隐藏标签
                     },
-                    tickWidth: 0, // Hide tick lines
-                    gridLineWidth: 0 // Hide grid lines
+                    tickWidth: 0, // 隐藏刻度线
+                    gridLineWidth: 0 // 隐藏网格线
                 }, {
                     // Pressure Y-axis (right) - Show only one tick for average
                     title: { text: 'Pressure (inHg)' },
@@ -467,7 +476,7 @@
                         format: '{value} inHg',
                         style: { color: '#FFB300' }
                     },
-                    tickInterval: 1, // Every 1 inHg
+                    tickInterval: 1, // 每1 inHg一个刻度
                     gridLineWidth: 0
                 }],
                 tooltip: {
@@ -484,13 +493,13 @@
                     dashStyle: 'Solid',
                     marker: { enabled: false },
                     zIndex: 3,
-                    yAxis: 0 // Assigned to left temperature Y-axis
+                    yAxis: 0 // 绑定到左侧温度Y轴
                 }, {
                     name: 'Humidity',
                     type: 'column',
                     data: humiditySeries,
                     tooltip: { valueSuffix: ' %' },
-                    yAxis: 1, // Assigned to right humidity Y-axis
+                    yAxis: 1, // 绑定到右侧湿度Y轴
                     color: '#33B5E5',
                     pointWidth: 8,
                     zIndex: 1
@@ -499,14 +508,14 @@
                     type: 'line',
                     data: pressureSeries,
                     tooltip: { valueSuffix: ' inHg' },
-                    yAxis: 2, // Assigned to right pressure Y-axis
-                    color: '#FFB300', // Darker yellow for pressure series
+                    yAxis: 2, // 绑定到右侧压力Y轴
+                    color: '#FFB300', // 更深的黄色用于压力系列
                     dashStyle: 'ShortDash',
                     marker: { enabled: false },
                     zIndex: 2
                 }],
                 legend: {
-                    enabled: false // Hide legend
+                    enabled: false // 隐藏图例
                 },
                 responsive: {
                     rules: [{
@@ -571,16 +580,14 @@
             document.getElementById('dailyWeatherDetails').classList.add('hidden');
             document.getElementById('chartsContainer').classList.add('hidden');
             document.getElementById('chartsHeader').classList.add('hidden'); // 隐藏 chartsHeader
-            document.getElementById('toggleChartsBtn').textContent = 'Show Charts'; // 重置按钮文本
-            // 隐藏 chartsContainer 的显示
-            document.getElementById('chartsContainer').style.display = 'none';
+            // 确保按钮文本重置为 "Show Charts"
+            document.getElementById('toggleChartsBtn').textContent = 'Show Charts';
         }
 
         window.getWeather = getWeather;
         window.clearForm = clearForm;
         window.handleRowClick = handleRowClick;
         window.toggleCharts = toggleCharts;
-
     </script>
 </body>
 </html>
