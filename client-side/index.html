@@ -164,10 +164,10 @@
 
             const cardContent = `
                 <div class="weather-card">
-                    <div class="weather-header">
+                    <div class="card-header">
                         <h2>${location}</h2>
                     </div>
-                    <div class="weather-main">
+                    <div class="card-main">
                         <div class="weather-icon">
                             <img src="${status.icon}" alt="${status.description}" width="80">
                             <p>${status.description}</p>
@@ -178,33 +178,33 @@
                     </div>
                     <div class="weather-details">
                         <div class="weather-detail-item">
-                            <img src="./images/humidity.png" alt="Humidity Icon" width="30">
                             <p>Humidity</p>
+                            <img src="./images/humidity.png" alt="Humidity Icon" width="30">
                             <p>${weather.humidity}%</p>
                         </div>
                         <div class="weather-detail-item">
-                            <img src="./images/pressure.png" alt="Pressure Icon" width="30">
                             <p>Pressure</p>
+                            <img src="./images/pressure.png" alt="Pressure Icon" width="30">
                             <p>${weather.pressureSeaLevel} inHg</p>
                         </div>
                         <div class="weather-detail-item">
-                            <img src="./images/wind_speed.png" alt="Wind Speed Icon" width="30">
                             <p>Wind Speed</p>
+                            <img src="./images/wind_speed.png" alt="Wind Speed Icon" width="30">
                             <p>${weather.windSpeed} mph</p>
                         </div>
                         <div class="weather-detail-item">
-                            <img src="./images/visibility.png" alt="Visibility Icon" width="30">
                             <p>Visibility</p>
+                            <img src="./images/visibility.png" alt="Visibility Icon" width="30">
                             <p>${weather.visibility || 'N/A'} mi</p>
                         </div>
                         <div class="weather-detail-item">
-                            <img src="./images/cloud_cover.png" alt="Cloud Cover Icon" width="30">
                             <p>Cloud Cover</p>
+                            <img src="./images/cloud_cover.png" alt="Cloud Cover Icon" width="30">
                             <p>${weather.cloudCover}%</p>
                         </div>
                         <div class="weather-detail-item">
+                             <p>UV Level</p>
                             <img src="./images/uv_level.png" alt="UV Level Icon" width="30">
-                            <p>UV Level</p>
                             <p>${weather.uvIndex}</p>
                         </div>
                     </div>

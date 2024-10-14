@@ -103,53 +103,70 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin: 20px auto;
-    max-width: 600px;
+    max-width: 700px;
 }
 
-.weather-header h2 {
-    font-size: 24px;
-    font-weight: 400;
-    margin: 0;
-    text-align: left;
-    color: #444;
+.card-header {
+    /* background-color: #4c82af; */
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+    color: rgb(0, 0, 0);
+    text-align: center;
 }
 
-.weather-main {
+.card-main {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     align-items: center;
     margin: 20px 0;
+    gap: 20px;
 }
 
 .weather-icon {
     text-align: center;
+    flex: 1;
 }
 
-.weather-icon p {
-    margin-top: 10px;
-    font-size: 18px;
-    color: #555;
+.weather-icon img {
+    width: 100px;
+    height: 100px;
+}
+
+.weather-temp {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .weather-temp h1 {
-    font-size: 64px;
-    font-weight: 300;
-    color: #666;
+    font-size: 72px;
     margin: 0;
 }
 
 .weather-details {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    display: flex;
+    justify-content: space-between; /* 项目均匀分布 */
+    align-items: center; /* 垂直居中对齐 */
+    flex-wrap: nowrap; /* 禁止换行 */
     margin-top: 20px;
+    width: 100%; /* 确保占满父容器 */
 }
 
 .weather-detail-item {
+    flex: 1; /* 每个项目均分剩余空间 */
     text-align: center;
-    color: #555;
+    min-width: 0; /* 防止内容撑开 */
+    margin: 10px;
+}
+
+.weather-detail-item img {
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .weather-detail-item p {
-    margin: 5px 0;
+    margin: 0;
 }
