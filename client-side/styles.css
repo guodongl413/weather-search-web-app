@@ -1,0 +1,94 @@
+/* 通用样式 */
+* {
+    box-sizing: border-box;  /* 确保所有元素的宽度计算包括 padding 和 border */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.form-container {
+    width: 400px;
+    margin: 50px auto;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.form-header {
+    background: url('./images/banner.jpg') no-repeat center;
+    background-size: cover;
+    padding: 30px;
+    text-align: center;
+    color: rgb(0, 0, 0);
+}
+
+.form-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.form-header p {
+    margin: 5px 0;
+}
+
+form {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input[type="text"], select {
+    width: 100%;  /* 确保输入框占据父元素的100%宽度 */
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: block;  /* 确保输入框是块级元素 */
+}
+
+.location-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 14px;
+    color: #4c82af;
+}
+
+.location-checkbox input {
+    margin-right: 5px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button[type="button"]:first-child {
+    background-color: #4c82af;
+}
+
+button[type="button"]:last-child {
+    background-color: #f4a261;
+}
+
+button:hover {
+    opacity: 0.9;
+}

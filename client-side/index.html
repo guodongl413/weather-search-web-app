@@ -31,33 +31,44 @@
             padding: 20px;
         }
     </style>
+    <link rel="stylesheet" href="./styles.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
 <body>
     <h1>Weather App Test</h1>
-    <form id="weatherForm">
-        <label for="useCurrentLocation">
-            <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation">
-            Use Current Location
-        </label>
-        <br><br>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Weather Search</h1>
+            <p>Fill out the form to get weather info!</p>
+        </div>
+        <form id="weatherForm">
+            <label for="street">Street</label>
+            <input type="text" id="street" name="street" placeholder="Enter your street">
 
-        <label for="street">Street: </label>
-        <input type="text" id="street" name="street">
-        <br><br>
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="Enter your city">
 
-        <label for="city">City: </label>
-        <input type="text" id="city" name="city">
-        <br><br>
+            <label for="state">State</label>
+            <select id="state" name="state">
+                <option value="">Select your state</option>
+                <option value="CA">California</option>
+                <option value="TX">Texas</option>
+                <!-- Add more states as needed -->
+            </select>
 
-        <label for="state">State: </label>
-        <input type="text" id="state" name="state">
-        <br><br>
+            <div class="location-checkbox">
+                <!-- <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation"> -->
+                <label for="useCurrentLocation">Want us to auto-detect your location? Check here</label>
+                <input type="checkbox" id="useCurrentLocation" name="useCurrentLocation">
+            </div>
 
-        <button type="button" onclick="getWeather()">Submit</button>
-        <button type="button" onclick="clearForm()">Clear</button>
-    </form>
+            <div class="button-container">
+                <button type="button" onclick="getWeather()">Submit</button>
+                <button type="button" onclick="clearForm()">Clear</button>
+            </div>
+        </form>
+    </div>
 
     <h2>Weather Data:</h2>
     <div id="weatherCard"></div>
@@ -75,6 +86,7 @@
     <script src="./config.js" type="module"></script>
     <script type="module">
         import config from './config.js';
+        import weatherMap from './weatherCodes.js';
 
         let latitude, longitude;  
         let weatherIntervals = [];
@@ -436,31 +448,6 @@
         }
 
         function mapWeatherCodeToStatus(weatherCode) {
-            const weatherMap = {
-                1000: { description: "Clear", icon: "./weather-code-symbols/clear_day.svg" },
-                1100: { description: "Mostly Clear", icon: "./weather-code-symbols/mostly_clear_day.svg" },
-                1101: { description: "Partly Cloudy", icon: "./weather-code-symbols/partly_cloudy_day.svg" },
-                1102: { description: "Mostly Cloudy", icon: "./weather-code-symbols/mostly_cloudy.svg" },
-                1001: { description: "Cloudy", icon: "./weather-code-symbols/cloudy.svg" },
-                2000: { description: "Fog", icon: "./weather-code-symbols/fog.svg" },
-                2100: { description: "Light Fog", icon: "./weather-code-symbols/fog_light.svg" },
-                4000: { description: "Drizzle", icon: "./weather-code-symbols/drizzle.svg" },
-                4001: { description: "Rain", icon: "./weather-code-symbols/rain.svg" },
-                4200: { description: "Light Rain", icon: "./weather-code-symbols/rain_light.svg" },
-                4201: { description: "Heavy Rain", icon: "./weather-code-symbols/rain_heavy.svg" },
-                5000: { description: "Snow", icon: "./weather-code-symbols/snow.svg" },
-                5001: { description: "Flurries", icon: "./weather-code-symbols/flurries.svg" },
-                5100: { description: "Light Snow", icon: "./weather-code-symbols/snow_light.svg" },
-                5101: { description: "Heavy Snow", icon: "./weather-code-symbols/snow_heavy.svg" },
-                6000: { description: "Freezing Drizzle", icon: "./weather-code-symbols/freezing_drizzle.svg" },
-                6001: { description: "Freezing Rain", icon: "./weather-code-symbols/freezing_rain.svg" },
-                6200: { description: "Light Freezing Rain", icon: "./weather-code-symbols/freezing_rain_light.svg" },
-                6201: { description: "Heavy Freezing Rain", icon: "./weather-code-symbols/freezing_rain_heavy.svg" },
-                7000: { description: "Ice Pellets", icon: "./weather-code-symbols/ice_pellets.svg" },
-                7101: { description: "Heavy Ice Pellets", icon: "./weather-code-symbols/ice_pellets_heavy.svg" },
-                7102: { description: "Light Ice Pellets", icon: "./weather-code-symbols/ice_pellets_light.svg" },
-                8000: { description: "Thunderstorm", icon: "./weather-code-symbols/tstorm.svg" }
-            };
             return weatherMap[weatherCode] || { description: "Unknown", icon: "" };
         }
 
