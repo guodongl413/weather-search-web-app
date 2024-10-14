@@ -261,39 +261,90 @@
         }
 
 
-        function handleRowClick(startTime) {
+        // function handleRowClick(startTime) {
 
+        //     fetchWeatherData(latitude, longitude);
+
+        //     const selectedInterval = weatherIntervals.find(interval => interval.startTime === startTime);
+
+        //     console.log(selectedInterval); // 输出选中的天气数据，检查所有字段
+
+        //     if (selectedInterval) {
+        //         const date = new Date(selectedInterval.startTime).toLocaleDateString('en-US', {
+        //             weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
+        //         });
+
+        //         const condition = mapWeatherCodeToStatus(selectedInterval.values.weatherCode);
+        //         const precipitation = mapPrecipitationType(selectedInterval.values.precipitationType);
+
+        //         const detailsContent = `
+        //             <div>
+        //                 <h3>${date}</h3>
+        //                 <p><strong>Condition:</strong> ${condition.description} <img src="${condition.icon}" alt="${condition.description}" width="20"></p>
+        //                 <h2>${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F</h2>
+        //                 <p><strong>Precipitation:</strong> ${precipitation}</p>
+        //                 <p><strong>Chance of Rain:</strong> ${selectedInterval.values.precipitationProbability || 0}%</p>
+        //                 <p><strong>Wind Speed:</strong> ${selectedInterval.values.windSpeed} mph</p>
+        //                 <p><strong>Humidity:</strong> ${selectedInterval.values.humidity}%</p>
+        //                 <p><strong>Visibility:</strong> ${selectedInterval.values.visibility || 'N/A'} mi</p>
+        //                 <p><strong>Sunrise/Sunset:</strong> ${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}</p>
+        //             </div>
+        //         `;
+
+        //         document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
+        //     }
+        // }
+
+        function handleRowClick(startTime) {
             fetchWeatherData(latitude, longitude);
 
-            const selectedInterval = weatherIntervals.find(interval => interval.startTime === startTime);
+            const selectedInterval = weatherIntervals.find(
+                (interval) => interval.startTime === startTime
+            );
 
             console.log(selectedInterval); // 输出选中的天气数据，检查所有字段
 
             if (selectedInterval) {
-                const date = new Date(selectedInterval.startTime).toLocaleDateString('en-US', {
-                    weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
-                });
+                const date = new Date(selectedInterval.startTime).toLocaleDateString(
+                    'en-US',
+                    {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    }
+                );
 
                 const condition = mapWeatherCodeToStatus(selectedInterval.values.weatherCode);
                 const precipitation = mapPrecipitationType(selectedInterval.values.precipitationType);
 
                 const detailsContent = `
-                    <div>
-                        <h3>${date}</h3>
-                        <p><strong>Condition:</strong> ${condition.description} <img src="${condition.icon}" alt="${condition.description}" width="20"></p>
-                        <h2>${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F</h2>
-                        <p><strong>Precipitation:</strong> ${precipitation}</p>
-                        <p><strong>Chance of Rain:</strong> ${selectedInterval.values.precipitationProbability || 0}%</p>
-                        <p><strong>Wind Speed:</strong> ${selectedInterval.values.windSpeed} mph</p>
-                        <p><strong>Humidity:</strong> ${selectedInterval.values.humidity}%</p>
-                        <p><strong>Visibility:</strong> ${selectedInterval.values.visibility || 'N/A'} mi</p>
-                        <p><strong>Sunrise/Sunset:</strong> ${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}</p>
+                    <div class="weather-details-card">
+                        <div class="weather-summary">
+                            <div>
+                                <h3>${date}</h3>
+                                <h2>${condition.description}</h2>
+                                <h1>${selectedInterval.values.temperatureMax}°F / ${selectedInterval.values.temperatureMin}°F</h1>
+                            </div>
+                            <div class="weather-icon-large">
+                                <img src="${condition.icon}" alt="${condition.description}" width="100">
+                            </div>
+                        </div>
+                        <div class="weather-stats">
+                            <p><strong>Precipitation:</strong> ${precipitation}</p>
+                            <p><strong>Chance of Rain:</strong> ${selectedInterval.values.precipitationProbability || 0}%</p>
+                            <p><strong>Wind Speed:</strong> ${selectedInterval.values.windSpeed} mph</p>
+                            <p><strong>Humidity:</strong> ${selectedInterval.values.humidity}%</p>
+                            <p><strong>Visibility:</strong> ${selectedInterval.values.visibility || 'N/A'} mi</p>
+                            <p><strong>Sunrise/Sunset:</strong> ${formatTime(selectedInterval.values.sunriseTime)}/${formatTime(selectedInterval.values.sunsetTime)}</p>
+                        </div>
                     </div>
                 `;
 
                 document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
             }
         }
+
 
         function toggleCharts() {
             const chartsContainer = document.getElementById('chartsContainer');
