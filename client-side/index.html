@@ -52,7 +52,7 @@
     <div id="weatherCard" class="hidden"></div>
     <!-- <h2>Weather Forecast Table:</h2> -->
     <div id="weatherTable" class="hidden"></div>
-    <h2>Daily Weather Details:</h2>
+    <!-- <h2>Daily Weather Details:</h2> -->
     <div id="dailyWeatherDetails" class="hidden"></div>
     <h2>Weather Charts:</h2>
     <button id="toggleChartsBtn" onclick="toggleCharts()" class="hidden">Show Charts</button>
@@ -68,6 +68,10 @@
 
         let latitude, longitude;  
         let weatherIntervals = [];
+
+        // References to Highcharts instances
+        let temperatureChart = null;
+        let hourlyChart = null;
 
         async function getWeather() {
             const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
@@ -274,6 +278,7 @@
                 const precipitation = mapPrecipitationType(selectedInterval.values.precipitationType);
 
                 const detailsContent = `
+                    <h1 class="weather-details-head">Daily Weather Details</h1>
                     <div class="weather-details-card">
                         <div class="weather-summary">
                             <div>
@@ -341,12 +346,17 @@
         }
 
         function renderTemperatureRangeChart(dailyData) {
+            // Destroy existing chart if it exists
+            if (temperatureChart) {
+                temperatureChart.destroy();
+            }
+
             const categories = dailyData.map(data => 
                 new Date(data.startTime).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
             );
             const tempRanges = dailyData.map(data => [data.values.temperatureMin, data.values.temperatureMax]);
 
-            Highcharts.chart('temperatureRangeChart', {
+            temperatureChart = Highcharts.chart('temperatureRangeChart', {
                 chart: { type: 'arearange' },
                 title: { text: 'Temperature Range (Next 5 Days)' },
                 xAxis: { categories },
@@ -361,6 +371,11 @@
 
         // Render hourly weather chart
         function renderHourlyWeatherChart(hourlyData) {
+            // Destroy existing chart if it exists
+            if (hourlyChart) {
+                hourlyChart.destroy();
+            }
+
             // Ensure hourlyData is an array
             if (!Array.isArray(hourlyData)) {
                 console.error('hourlyData should be an array of interval data.');
@@ -381,7 +396,7 @@
                 data.values.pressureSeaLevel
             ]);
 
-            Highcharts.chart('hourlyWeatherChart', {
+            hourlyChart = Highcharts.chart('hourlyWeatherChart', {
                 chart: {
                     zoomType: 'x'
                 },
@@ -534,7 +549,20 @@
             document.getElementById('weatherCard').innerHTML = '';
             document.getElementById('weatherTable').innerHTML = '';
             document.getElementById('dailyWeatherDetails').innerHTML = '';
-            document.getElementById('chartsContainer').innerHTML = '';
+            // Remove chart contents but keep containers intact
+            // document.getElementById('chartsContainer').innerHTML = ''; // Removed this line
+
+            // If you need to reset charts, destroy existing instances
+            if (temperatureChart) {
+                temperatureChart.destroy();
+                temperatureChart = null;
+            }
+            if (hourlyChart) {
+                hourlyChart.destroy();
+                hourlyChart = null;
+            }
+
+            // Hide all sections
             document.getElementById('weatherCard').classList.add('hidden');
             document.getElementById('weatherTable').classList.add('hidden');
             document.getElementById('dailyWeatherDetails').classList.add('hidden');

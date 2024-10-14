@@ -229,6 +229,11 @@ button:hover {
 }
 
 /* weather details */
+
+.weather-details-head {
+    text-align: center; /* Centers the text horizontally */
+}
+
 .weather-details-card {
     background: linear-gradient(to bottom, #ffffff, #384D78); /* 渐变背景 */
     border-radius: 12px;
