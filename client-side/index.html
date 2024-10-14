@@ -111,7 +111,8 @@
             url += `?${params.toString()}`;
 
             try {
-                const response = await fetch(url);
+                // const response = await fetch(url);
+                const response = await fetch('./test/dailyData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -135,27 +136,6 @@
                 document.getElementById('weatherCard').innerHTML = `<p>Error: ${error.message}</p>`;
             }
         }
-
-        // function displayWeatherCard(location, weather) {
-
-        //     const weatherCode = weather.weatherCode;
-        //     const status = mapWeatherCodeToStatus(weatherCode);
-
-        //     const cardContent = `
-        //         <div>
-        //             <h3>Location: ${location}</h3>
-        //             <p><strong>Weather Condition:</strong><img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}</p>
-        //             <p><strong>Temperature:</strong> ${weather.temperature} °F</p>
-        //             <p><strong>Humidity:</strong> ${weather.humidity} % <img src="./images/humidity.png" alt="Humidity Icon" width="20"></p>
-        //             <p><strong>Pressure:</strong> ${weather.pressureSeaLevel} inHg <img src="./images/Pressure.png" alt="Pressure Icon" width="20"></p>
-        //             <p><strong>Wind Speed:</strong> ${weather.windSpeed} mph <img src="./images/Wind_Speed.png" alt="Wind Speed Icon" width="20"></p>
-        //             <p><strong>Visibility:</strong> ${weather.visibility || 'N/A'} miles <img src="./images/Visibility.png" alt="Visibility Icon" width="20"></p>
-        //             <p><strong>Cloud Cover:</strong> ${weather.cloudCover}% <img src="./images/Cloud_Cover.png" alt="Cloud Cover Icon" width="20"></p>
-        //             <p><strong>UV Index:</strong> ${weather.uvIndex} <img src="./images/UV_Level.png" alt="UV Index Icon" width="20"></p>
-        //         </div>
-        //     `;
-        //     document.getElementById('weatherCard').innerHTML = cardContent;
-        // }
 
         function displayWeatherCard(location, weather) {
 
@@ -212,43 +192,6 @@
             `;
             document.getElementById('weatherCard').innerHTML = cardContent;
         }
-
-        // function displayWeatherTable(weatherIntervals) {
-        //     let tableContent = `
-        //         <div class="table-header">
-        //             <div class="weather-cell">Date</div>
-        //             <div class="weather-cell">Status</div>
-        //             <div class="weather-cell">Temp High</div>
-        //             <div class="weather-cell">Temp Low</div>
-        //             <div class="weather-cell">Wind Speed</div>
-        //         </div>
-        //     `;
-
-        //     for (let interval of weatherIntervals) {
-        //         const date = new Date(interval.startTime).toLocaleDateString('en-US', {
-        //             weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
-        //         });
-        //         const weatherCode = interval.values.weatherCode;
-        //         const status = mapWeatherCodeToStatus(weatherCode);
-        //         const tempHigh = interval.values.temperatureMax;
-        //         const tempLow = interval.values.temperatureMin;
-        //         const windSpeed = interval.values.windSpeed;
-
-        //         tableContent += `
-        //             <div class="weather-row clickable-row" onclick="handleRowClick('${interval.startTime}')">
-        //                 <div class="weather-cell">${date}</div>
-        //                 <div class="weather-cell">
-        //                     <img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}
-        //                 </div>
-        //                 <div class="weather-cell">${tempHigh} °F</div>
-        //                 <div class="weather-cell">${tempLow} °F</div>
-        //                 <div class="weather-cell">${windSpeed} mph</div>
-        //             </div>
-        //         `;
-        //     }
-
-        //     document.getElementById('weatherTable').innerHTML = tableContent;
-        // }
 
         function displayWeatherTable(weatherIntervals) {
             let tableContent = `

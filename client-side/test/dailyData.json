@@ -1,0 +1,155 @@
+{
+  "address": "719 W 45th St, Los Angeles, CA 90037, USA",
+  "latitude": "34.0030",
+  "longitude": "-118.2863",
+  "weather": {
+    "data": {
+      "timelines": [
+        {
+          "endTime": "2024-10-19T06:00:00-07:00",
+          "intervals": [
+            {
+              "startTime": "2024-10-14T06:00:00-07:00",
+              "values": {
+                "cloudCover": 100,
+                "humidity": 90,
+                "moonPhase": 3,
+                "precipitationProbability": 0,
+                "precipitationType": 0,
+                "pressureSeaLevel": 30.06,
+                "sunriseTime": "2024-10-14T13:57:00Z",
+                "sunsetTime": "2024-10-15T01:20:00Z",
+                "temperature": 71.75,
+                "temperatureApparent": 71.75,
+                "temperatureMax": 71.75,
+                "temperatureMin": 60.8,
+                "uvIndex": 4,
+                "visibility": 9.94,
+                "weatherCode": 1001,
+                "windSpeed": 8.05
+              }
+            },
+            {
+              "startTime": "2024-10-15T06:00:00-07:00",
+              "values": {
+                "cloudCover": 100,
+                "humidity": 99.11,
+                "moonPhase": 4,
+                "precipitationProbability": 0,
+                "precipitationType": 0,
+                "pressureSeaLevel": 30.06,
+                "sunriseTime": "2024-10-15T13:58:00Z",
+                "sunsetTime": "2024-10-16T01:19:00Z",
+                "temperature": 69.48,
+                "temperatureApparent": 69.48,
+                "temperatureMax": 69.48,
+                "temperatureMin": 59.19,
+                "uvIndex": 4,
+                "visibility": 9.94,
+                "weatherCode": 1001,
+                "windSpeed": 8.27
+              }
+            },
+            {
+              "startTime": "2024-10-16T06:00:00-07:00",
+              "values": {
+                "cloudCover": 100,
+                "humidity": 98.95,
+                "moonPhase": 4,
+                "precipitationProbability": 0,
+                "precipitationType": 0,
+                "pressureSeaLevel": 29.99,
+                "sunriseTime": "2024-10-16T13:58:00Z",
+                "sunsetTime": "2024-10-17T01:18:00Z",
+                "temperature": 74,
+                "temperatureApparent": 74,
+                "temperatureMax": 74,
+                "temperatureMin": 58.61,
+                "uvIndex": 3,
+                "visibility": 9.94,
+                "weatherCode": 1000,
+                "windSpeed": 11.85
+              }
+            },
+            {
+              "startTime": "2024-10-17T06:00:00-07:00",
+              "values": {
+                "cloudCover": 100,
+                "humidity": 94.95,
+                "moonPhase": 4,
+                "precipitationProbability": 5,
+                "precipitationType": 0,
+                "pressureSeaLevel": 29.89,
+                "sunriseTime": "2024-10-17T13:59:00Z",
+                "sunsetTime": "2024-10-18T01:16:00Z",
+                "temperature": 68.48,
+                "temperatureApparent": 68.48,
+                "temperatureMax": 68.48,
+                "temperatureMin": 59.01,
+                "uvIndex": 2,
+                "visibility": 15,
+                "weatherCode": 1001,
+                "windSpeed": 7.33
+              }
+            },
+            {
+              "startTime": "2024-10-18T06:00:00-07:00",
+              "values": {
+                "cloudCover": 89.45,
+                "humidity": 69.22,
+                "moonPhase": 5,
+                "precipitationProbability": 5,
+                "precipitationType": 0,
+                "pressureSeaLevel": 29.95,
+                "sunriseTime": "2024-10-18T14:00:00Z",
+                "sunsetTime": "2024-10-19T01:15:00Z",
+                "temperature": 74.34,
+                "temperatureApparent": 74.34,
+                "temperatureMax": 74.34,
+                "temperatureMin": 61.62,
+                "uvIndex": 4,
+                "visibility": 15,
+                "weatherCode": 1000,
+                "windSpeed": 22.58
+              }
+            },
+            {
+              "startTime": "2024-10-19T06:00:00-07:00",
+              "values": {
+                "cloudCover": 2.13,
+                "humidity": 23.16,
+                "moonPhase": 5,
+                "precipitationProbability": 0,
+                "precipitationType": 0,
+                "pressureSeaLevel": 30.08,
+                "sunriseTime": "2024-10-19T14:01:00Z",
+                "sunsetTime": "2024-10-20T01:14:00Z",
+                "temperature": 71.93,
+                "temperatureApparent": 71.93,
+                "temperatureMax": 71.93,
+                "temperatureMin": 62.27,
+                "visibility": 15,
+                "weatherCode": 1000,
+                "windSpeed": 10.86
+              }
+            }
+          ],
+          "startTime": "2024-10-14T06:00:00-07:00",
+          "timestep": "1d"
+        }
+      ],
+      "warnings": [
+        {
+          "code": 246001,
+          "message": "The following field is not supported for a time range: 'uvIndex'",
+          "meta": {
+            "field": "uvIndex",
+            "from": "2024-10-14T04:30:00-07:00",
+            "to": "2024-10-18T23:46:00-07:00"
+          },
+          "type": "Time Bounded Field"
+        }
+      ]
+    }
+  }
+}
