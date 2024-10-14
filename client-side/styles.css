@@ -287,3 +287,9 @@ button:hover {
     text-align: left; /* 冒号后的内容左对齐 */
     width: 50%;
 }
+
+/* charts section */
+#chartsHeader {
+    text-align: center;
+    margin: 20px 0; /* 可选 */
+}

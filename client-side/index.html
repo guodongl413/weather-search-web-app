@@ -54,8 +54,10 @@
     <div id="weatherTable" class="hidden"></div>
     <!-- <h2>Daily Weather Details:</h2> -->
     <div id="dailyWeatherDetails" class="hidden"></div>
-    <h2>Weather Charts:</h2>
-    <button id="toggleChartsBtn" onclick="toggleCharts()" class="hidden">Show Charts</button>
+    <div id="chartsHeader" class="hidden">
+        <h2>Weather Charts:</h2>
+        <button id="toggleChartsBtn" onclick="toggleCharts()">Show Charts</button>
+    </div>
     <div id="chartsContainer" class="hidden">
         <div id="temperatureRangeChart" style="width: 100%; height: 400px;"></div>
         <div id="hourlyWeatherChart" style="width: 100%; height: 400px;"></div>
@@ -323,10 +325,13 @@
 
                 document.getElementById('dailyWeatherDetails').innerHTML = detailsContent;
 
-                // Show dailyWeatherDetails and charts, hide weatherCard and weatherTable
+                // 显示 dailyWeatherDetails 和 chartsContainer，隐藏其他部分
                 document.getElementById('weatherCard').classList.add('hidden');
                 document.getElementById('weatherTable').classList.add('hidden');
                 document.getElementById('dailyWeatherDetails').classList.remove('hidden');
+                
+                // 显示 chartsHeader 和 chartsContainer
+                document.getElementById('chartsHeader').classList.remove('hidden');
                 document.getElementById('chartsContainer').classList.remove('hidden');
                 document.getElementById('toggleChartsBtn').classList.remove('hidden');
             }
@@ -549,10 +554,8 @@
             document.getElementById('weatherCard').innerHTML = '';
             document.getElementById('weatherTable').innerHTML = '';
             document.getElementById('dailyWeatherDetails').innerHTML = '';
-            // Remove chart contents but keep containers intact
-            // document.getElementById('chartsContainer').innerHTML = ''; // Removed this line
-
-            // If you need to reset charts, destroy existing instances
+            
+            // 销毁现有图表实例
             if (temperatureChart) {
                 temperatureChart.destroy();
                 temperatureChart = null;
@@ -562,14 +565,14 @@
                 hourlyChart = null;
             }
 
-            // Hide all sections
+            // 隐藏所有部分
             document.getElementById('weatherCard').classList.add('hidden');
             document.getElementById('weatherTable').classList.add('hidden');
             document.getElementById('dailyWeatherDetails').classList.add('hidden');
             document.getElementById('chartsContainer').classList.add('hidden');
-            document.getElementById('toggleChartsBtn').classList.add('hidden');
-            document.getElementById('toggleChartsBtn').textContent = 'Show Charts'; // Reset button text
-            // Optionally, hide chartsContainer if it's visible
+            document.getElementById('chartsHeader').classList.add('hidden'); // 隐藏 chartsHeader
+            document.getElementById('toggleChartsBtn').textContent = 'Show Charts'; // 重置按钮文本
+            // 隐藏 chartsContainer 的显示
             document.getElementById('chartsContainer').style.display = 'none';
         }
 
