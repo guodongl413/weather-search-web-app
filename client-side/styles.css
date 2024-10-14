@@ -258,14 +258,27 @@ button:hover {
 
 .weather-stats {
     width: 100%;
-    display: flex;
-    flex-direction: column; /* 纵向排列 */
-    align-items: center; /* 水平居中 */
-    justify-content: center; /* 垂直居中 */
+    margin-top: 20px;
 }
 
-.weather-stats p {
-    margin: 5px 0;
+.weather-stats table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.weather-stats td {
+    padding: 5px 2px;
+
     font-size: 16px;
-    text-align: center; /* 文本居中 */
+    color: white;
+}
+
+.weather-stats td:first-child {
+    text-align: right; /* 冒号前的内容右对齐 */
+    width: 50%; /* 确保两列均匀分布 */
+}
+
+.weather-stats td:last-child {
+    text-align: left; /* 冒号后的内容左对齐 */
+    width: 50%;
 }
