@@ -58,7 +58,7 @@
 
     <!-- 天气图表部分 -->
     <div id="chartsHeader" class="hidden">
-        <h2>Weather Charts:</h2>
+        <h2>Weather Charts</h2>
         <button id="toggleChartsBtn" onclick="toggleCharts()">Show Charts</button>
     </div>
     <div id="chartsContainer" class="hidden">
@@ -353,6 +353,12 @@
             if (chartsContainer.classList.contains('hidden')) {
                 chartsContainer.classList.remove('hidden');
                 toggleBtn.textContent = 'Hide Charts';
+                
+                // 滚动到页面底部
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth' // 平滑滚动
+                });
             } else {
                 chartsContainer.classList.add('hidden');
                 toggleBtn.textContent = 'Show Charts';
