@@ -92,3 +92,61 @@ button[type="button"]:last-child {
 button:hover {
     opacity: 0.9;
 }
+
+.weather-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.weather-header h2 {
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0;
+    text-align: left;
+    color: #444;
+}
+
+.weather-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.weather-icon {
+    text-align: center;
+}
+
+.weather-icon p {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #555;
+}
+
+.weather-temp h1 {
+    font-size: 64px;
+    font-weight: 300;
+    color: #666;
+    margin: 0;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.weather-detail-item {
+    text-align: center;
+    color: #555;
+}
+
+.weather-detail-item p {
+    margin: 5px 0;
+}
+
