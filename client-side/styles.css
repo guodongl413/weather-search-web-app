@@ -104,19 +104,18 @@ button:hover {
     padding: 20px;
     margin: 20px auto;
     max-width: 700px;
+    color: #555; /* 设置文字为灰色 */
 }
 
 .card-header {
-    /* background-color: #4c82af; */
     padding: 10px;
     border-radius: 8px 8px 0 0;
-    color: rgb(0, 0, 0);
+    color: #555; /* 灰色文字 */
     text-align: center;
 }
 
 .card-main {
     display: flex;
-    /* justify-content: space-between; */
     align-items: center;
     margin: 20px 0;
     gap: 20px;
@@ -125,6 +124,7 @@ button:hover {
 .weather-icon {
     text-align: center;
     flex: 1;
+    color: #555; /* 灰色文字 */
 }
 
 .weather-icon img {
@@ -137,6 +137,7 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #555; /* 灰色文字 */
 }
 
 .weather-temp h1 {
@@ -146,18 +147,19 @@ button:hover {
 
 .weather-details {
     display: flex;
-    justify-content: space-between; /* 项目均匀分布 */
-    align-items: center; /* 垂直居中对齐 */
-    flex-wrap: nowrap; /* 禁止换行 */
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
     margin-top: 20px;
-    width: 100%; /* 确保占满父容器 */
+    width: 100%;
 }
 
 .weather-detail-item {
-    flex: 1; /* 每个项目均分剩余空间 */
+    flex: 1;
     text-align: center;
-    min-width: 0; /* 防止内容撑开 */
+    min-width: 0;
     margin: 10px;
+    color: #555; /* 灰色文字 */
 }
 
 .weather-detail-item img {
@@ -169,4 +171,5 @@ button:hover {
 
 .weather-detail-item p {
     margin: 0;
+    color: #555; /* 灰色文字 */
 }
