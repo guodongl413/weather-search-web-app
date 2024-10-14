@@ -10,6 +10,8 @@ body {
     padding: 0;
 }
 
+/* Input form*/
+
 .form-container {
     width: 400px;
     margin: 50px auto;
@@ -93,6 +95,8 @@ button:hover {
     opacity: 0.9;
 }
 
+/* weather display card */
+
 .weather-card {
     background-color: white;
     border-radius: 8px;
@@ -149,4 +153,3 @@ button:hover {
 .weather-detail-item p {
     margin: 5px 0;
 }
-
