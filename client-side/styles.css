@@ -173,3 +173,57 @@ button:hover {
     margin: 0;
     color: #555; /* 灰色文字 */
 }
+
+/* weather table */
+/* 表格容器，设置固定宽度 */
+#weatherTable {
+    width: 1000px; /* 固定表格宽度 */
+    margin: 0 auto; /* 居中表格 */
+    border-collapse: collapse;
+}
+
+/* 表头 */
+.table-header {
+    display: flex;
+    background-color: #4c82af;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+/* 每一行 */
+.table-row {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    /* border-bottom: 1px solid #ddd; */
+    border-left: 1px solid #bab9b9;
+    border-right: 1px solid #bab9b9;
+    height: 60px; /* 固定行高 */
+    margin-top: 10px;
+}
+
+/* 单元格 */
+.table-cell {
+    width: 200px; /* 固定单元格宽度 */
+    text-align: center;
+    padding: 10px;
+    /* border: 1px #555; */
+}
+
+/* 图标与文字垂直居中 */
+.table-cell img {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.table-cell span {
+    vertical-align: middle;
+    font-size: 16px;
+}
+
+/* 悬停效果 */
+.table-row:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}

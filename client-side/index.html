@@ -213,14 +213,51 @@
             document.getElementById('weatherCard').innerHTML = cardContent;
         }
 
+        // function displayWeatherTable(weatherIntervals) {
+        //     let tableContent = `
+        //         <div class="table-header">
+        //             <div class="weather-cell">Date</div>
+        //             <div class="weather-cell">Status</div>
+        //             <div class="weather-cell">Temp High</div>
+        //             <div class="weather-cell">Temp Low</div>
+        //             <div class="weather-cell">Wind Speed</div>
+        //         </div>
+        //     `;
+
+        //     for (let interval of weatherIntervals) {
+        //         const date = new Date(interval.startTime).toLocaleDateString('en-US', {
+        //             weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'
+        //         });
+        //         const weatherCode = interval.values.weatherCode;
+        //         const status = mapWeatherCodeToStatus(weatherCode);
+        //         const tempHigh = interval.values.temperatureMax;
+        //         const tempLow = interval.values.temperatureMin;
+        //         const windSpeed = interval.values.windSpeed;
+
+        //         tableContent += `
+        //             <div class="weather-row clickable-row" onclick="handleRowClick('${interval.startTime}')">
+        //                 <div class="weather-cell">${date}</div>
+        //                 <div class="weather-cell">
+        //                     <img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}
+        //                 </div>
+        //                 <div class="weather-cell">${tempHigh} °F</div>
+        //                 <div class="weather-cell">${tempLow} °F</div>
+        //                 <div class="weather-cell">${windSpeed} mph</div>
+        //             </div>
+        //         `;
+        //     }
+
+        //     document.getElementById('weatherTable').innerHTML = tableContent;
+        // }
+
         function displayWeatherTable(weatherIntervals) {
             let tableContent = `
-                <div class="weather-header">
-                    <div class="weather-cell">Date</div>
-                    <div class="weather-cell">Status</div>
-                    <div class="weather-cell">Temp High</div>
-                    <div class="weather-cell">Temp Low</div>
-                    <div class="weather-cell">Wind Speed</div>
+                <div class="table-header">
+                    <div class="table-cell">Date</div>
+                    <div class="table-cell">Status</div>
+                    <div class="table-cell">Temp High</div>
+                    <div class="table-cell">Temp Low</div>
+                    <div class="table-cell">Wind Speed</div>
                 </div>
             `;
 
@@ -235,20 +272,22 @@
                 const windSpeed = interval.values.windSpeed;
 
                 tableContent += `
-                    <div class="weather-row clickable-row" onclick="handleRowClick('${interval.startTime}')">
-                        <div class="weather-cell">${date}</div>
-                        <div class="weather-cell">
-                            <img src="${status.icon}" alt="${status.description}" width="20"> ${status.description}
+                    <div class="table-row" onclick="handleRowClick('${interval.startTime}')">
+                        <div class="table-cell">${date}</div>
+                        <div class="table-cell">
+                            <img src="${status.icon}" alt="${status.description}" width="30">
+                            <span>${status.description}</span>
                         </div>
-                        <div class="weather-cell">${tempHigh} °F</div>
-                        <div class="weather-cell">${tempLow} °F</div>
-                        <div class="weather-cell">${windSpeed} mph</div>
+                        <div class="table-cell">${tempHigh.toFixed(2)} °F</div>
+                        <div class="table-cell">${tempLow.toFixed(2)} °F</div>
+                        <div class="table-cell">${windSpeed.toFixed(2)} mph</div>
                     </div>
                 `;
             }
 
             document.getElementById('weatherTable').innerHTML = tableContent;
         }
+
 
         async function fetchWeatherData(lat, lng) {
             if (!lat || !lng) {
