@@ -71,7 +71,9 @@
     <!-- 天气图表部分 -->
     <div id="chartsHeader" class="hidden">
         <h2>Weather Charts</h2>
-        <button id="toggleChartsBtn" onclick="toggleCharts()">Show Charts</button>
+        <button id="toggleChartsBtn" onclick="toggleCharts()">
+            <img id="toggleChartsImg" src="./images/point-down-512.png" alt="Show Charts">
+        </button>
     </div>
     <div id="chartsContainer" class="hidden">
         <div id="temperatureRangeChart" style="width: 100%; height: 400px;"></div>
@@ -425,18 +427,20 @@
                 // 显示 chartsHeader，并确保 chartsContainer 保持隐藏状态
                 document.getElementById('chartsHeader').classList.remove('hidden');
                 document.getElementById('chartsContainer').classList.add('hidden'); // 保持隐藏
-                // 确保按钮文本为 "Show Charts"
-                document.getElementById('toggleChartsBtn').textContent = 'Show Charts';
+                // 确保按钮图像切换为 "Show Charts" 图标
+                document.getElementById('toggleChartsImg').src = './images/point-down-512.png';
+                document.getElementById('toggleChartsImg').alt = 'Show Charts';
             }
         }
 
         function toggleCharts() {
             const chartsContainer = document.getElementById('chartsContainer');
-            const toggleBtn = document.getElementById('toggleChartsBtn');
+            const toggleImg = document.getElementById('toggleChartsImg');
             
             if (chartsContainer.classList.contains('hidden')) {
                 chartsContainer.classList.remove('hidden');
-                toggleBtn.textContent = 'Hide Charts';
+                toggleImg.src = './images/point-up-512.png'; // 切换为向上箭头图标
+                toggleImg.alt = 'Hide Charts';
                 
                 // 滚动到页面底部
                 window.scrollTo({
@@ -445,7 +449,8 @@
                 });
             } else {
                 chartsContainer.classList.add('hidden');
-                toggleBtn.textContent = 'Show Charts';
+                toggleImg.src = './images/point-down-512.png'; // 切换回向下箭头图标
+                toggleImg.alt = 'Show Charts';
             }
         }
 
@@ -670,8 +675,9 @@
             document.getElementById('dailyWeatherDetails').classList.add('hidden');
             document.getElementById('chartsContainer').classList.add('hidden');
             document.getElementById('chartsHeader').classList.add('hidden'); // 隐藏 chartsHeader
-            // 确保按钮文本重置为 "Show Charts"
-            document.getElementById('toggleChartsBtn').textContent = 'Show Charts';
+            // 确保按钮图像重置为 "Show Charts" 图标
+            document.getElementById('toggleChartsImg').src = './images/point-down-512.png';
+            document.getElementById('toggleChartsImg').alt = 'Show Charts';
 
             // 重置表单验证状态
             streetError.classList.add('hidden');
