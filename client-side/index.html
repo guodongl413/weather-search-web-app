@@ -8,6 +8,15 @@
         .hidden {
             display: none;
         }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        .disabled-button {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
     <link rel="stylesheet" href="./styles.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -20,14 +29,17 @@
             <h1>Weather Search</h1>
             <p>Fill out the form to get weather info!</p>
         </div>
-        <form id="weatherForm">
+        <form id="weatherForm" novalidate>
             <label for="street">Street</label>
+            <span id="streetError" class="error-message hidden">This field is required.</span>
             <input type="text" id="street" name="street" placeholder="Enter your street">
 
             <label for="city">City</label>
+            <span id="cityError" class="error-message hidden">This field is required.</span>
             <input type="text" id="city" name="city" placeholder="Enter your city">
 
             <label for="state">State</label>
+            <span id="stateError" class="error-message hidden">Please select a state.</span>
             <select id="state" name="state">
                 <option value="">Select your state</option>
                 <option value="CA">California</option>
@@ -41,7 +53,7 @@
             </div>
 
             <div class="button-container">
-                <button type="button" onclick="getWeather()">Submit</button>
+                <button type="button" id="submitBtn" onclick="getWeather()" disabled>Submit</button>
                 <button type="button" onclick="clearForm()">Clear</button>
             </div>
         </form>
@@ -81,11 +93,83 @@
         let temperatureChart = null;
         let hourlyChart = null;
 
+        // 表单元素
+        const useCurrentLocationCheckbox = document.getElementById('useCurrentLocation');
+        const streetInput = document.getElementById('street');
+        const cityInput = document.getElementById('city');
+        const stateSelect = document.getElementById('state');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // 错误提示元素
+        const streetError = document.getElementById('streetError');
+        const cityError = document.getElementById('cityError');
+        const stateError = document.getElementById('stateError');
+
+        // 初始化表单验证
+        function initializeFormValidation() {
+            // 监听复选框变化
+            useCurrentLocationCheckbox.addEventListener('change', validateForm);
+
+            // 监听输入框变化
+            streetInput.addEventListener('input', validateForm);
+            cityInput.addEventListener('input', validateForm);
+            stateSelect.addEventListener('change', validateForm);
+        }
+
+        // 表单验证函数
+        function validateForm() {
+            const useLocation = useCurrentLocationCheckbox.checked;
+            let isValid = true;
+
+            if (!useLocation) {
+                // 验证 street
+                if (streetInput.value.trim() === '') {
+                    streetError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    streetError.classList.add('hidden');
+                }
+
+                // 验证 city
+                if (cityInput.value.trim() === '') {
+                    cityError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    cityError.classList.add('hidden');
+                }
+
+                // 验证 state
+                if (stateSelect.value === '') {
+                    stateError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    stateError.classList.add('hidden');
+                }
+            } else {
+                // 隐藏所有错误提示
+                streetError.classList.add('hidden');
+                cityError.classList.add('hidden');
+                stateError.classList.add('hidden');
+            }
+
+            // 启用或禁用 Submit 按钮
+            if (isValid) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('disabled-button');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('disabled-button');
+            }
+        }
+
+        // 调用初始化函数
+        initializeFormValidation();
+
         async function getWeather() {
-            const useCurrentLocation = document.getElementById('useCurrentLocation').checked;
-            const street = document.getElementById('street').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
+            const useCurrentLocation = useCurrentLocationCheckbox.checked;
+            const street = streetInput.value.trim();
+            const city = cityInput.value.trim();
+            const state = stateSelect.value;
 
             let url = `${config.API_BASE_URL}/get_location`;
             const params = new URLSearchParams();
@@ -562,10 +646,10 @@
         }
 
         function clearForm() {
-            document.getElementById('useCurrentLocation').checked = false;
-            document.getElementById('street').value = '';
-            document.getElementById('city').value = '';
-            document.getElementById('state').value = '';
+            useCurrentLocationCheckbox.checked = false;
+            streetInput.value = '';
+            cityInput.value = '';
+            stateSelect.value = '';
             document.getElementById('weatherCard').innerHTML = '';
             document.getElementById('weatherTable').innerHTML = '';
             document.getElementById('dailyWeatherDetails').innerHTML = '';
@@ -588,6 +672,13 @@
             document.getElementById('chartsHeader').classList.add('hidden'); // 隐藏 chartsHeader
             // 确保按钮文本重置为 "Show Charts"
             document.getElementById('toggleChartsBtn').textContent = 'Show Charts';
+
+            // 重置表单验证状态
+            streetError.classList.add('hidden');
+            cityError.classList.add('hidden');
+            stateError.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('disabled-button');
         }
 
         window.getWeather = getWeather;
