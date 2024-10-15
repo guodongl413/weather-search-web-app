@@ -18,7 +18,7 @@
             cursor: not-allowed;
         }
     </style>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
 </head>
@@ -120,7 +120,7 @@
     <div id="chartsHeader" class="hidden">
         <h2>Weather Charts</h2>
         <button id="toggleChartsBtn" onclick="toggleCharts()">
-            <img id="toggleChartsImg" src="./images/point-down-512.png" alt="Show Charts">
+            <img id="toggleChartsImg" src="/static/images/point-down-512.png" alt="Show Charts">
         </button>
     </div>
     <div id="chartsContainer" class="hidden">
@@ -129,12 +129,12 @@
     </div>
 
     <!-- 引入 config.js -->
-    <script src="./config.js" type="module"></script>
+    <script src="/static/config.js" type="module"></script>
 
     <!-- 主脚本 -->
     <script type="module">
-        import config from './config.js';
-        import weatherMap from './weatherCodes.js';
+        import config from '/static/config.js';
+        import weatherMap from '/static/weatherCodes.js';
 
         let latitude, longitude;  
         let weatherIntervals = [];
@@ -237,7 +237,7 @@
             try {
                 // 模拟请求数据
                 const response = await fetch(url);
-                // const response = await fetch('./test/dailyData.json');
+                // const response = await fetch('/static/test/dailyData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -298,32 +298,32 @@
                     <div class="weather-details">
                         <div class="weather-detail-item">
                             <p>Humidity</p>
-                            <img src="./images/humidity.png" alt="Humidity Icon" width="30">
+                            <img src="/static/images/humidity.png" alt="Humidity Icon" width="30">
                             <p>${weather.humidity}%</p>
                         </div>
                         <div class="weather-detail-item">
                             <p>Pressure</p>
-                            <img src="./images/pressure.png" alt="Pressure Icon" width="30">
+                            <img src="/static/images/Pressure.png" alt="Pressure Icon" width="30">
                             <p>${weather.pressureSeaLevel} inHg</p>
                         </div>
                         <div class="weather-detail-item">
                             <p>Wind Speed</p>
-                            <img src="./images/wind_speed.png" alt="Wind Speed Icon" width="30">
+                            <img src="/static/images/Wind_Speed.png" alt="Wind Speed Icon" width="30">
                             <p>${weather.windSpeed} mph</p>
                         </div>
                         <div class="weather-detail-item">
                             <p>Visibility</p>
-                            <img src="./images/visibility.png" alt="Visibility Icon" width="30">
+                            <img src="/static/images/Visibility.png" alt="Visibility Icon" width="30">
                             <p>${weather.visibility || 'N/A'} mi</p>
                         </div>
                         <div class="weather-detail-item">
                             <p>Cloud Cover</p>
-                            <img src="./images/cloud_cover.png" alt="Cloud Cover Icon" width="30">
+                            <img src="/static/images/Cloud_Cover.png" alt="Cloud Cover Icon" width="30">
                             <p>${weather.cloudCover}%</p>
                         </div>
                         <div class="weather-detail-item">
                              <p>UV Level</p>
-                            <img src="./images/uv_level.png" alt="UV Level Icon" width="30">
+                            <img src="/static/images/UV_Level.png" alt="UV Level Icon" width="30">
                             <p>${weather.uvIndex}</p>
                         </div>
                     </div>
@@ -385,7 +385,7 @@
             try {
                 // 模拟请求数据
                 const response = await fetch(`${url}?${params.toString()}`);
-                // const response = await fetch('./test/weatherData.json');
+                // const response = await fetch('/static/test/weatherData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -478,7 +478,7 @@
                 document.getElementById('chartsHeader').classList.remove('hidden');
                 document.getElementById('chartsContainer').classList.add('hidden'); // 保持隐藏
                 // 确保按钮图像切换为 "Show Charts" 图标
-                document.getElementById('toggleChartsImg').src = './images/point-down-512.png';
+                document.getElementById('toggleChartsImg').src = '/static/images/point-down-512.png';
                 document.getElementById('toggleChartsImg').alt = 'Show Charts';
             }
         }
@@ -489,7 +489,7 @@
             
             if (chartsContainer.classList.contains('hidden')) {
                 chartsContainer.classList.remove('hidden');
-                toggleImg.src = './images/point-up-512.png'; // 切换为向上箭头图标
+                toggleImg.src = '/static/images/point-up-512.png'; // 切换为向上箭头图标
                 toggleImg.alt = 'Hide Charts';
                 
                 // 滚动到页面底部
@@ -499,7 +499,7 @@
                 });
             } else {
                 chartsContainer.classList.add('hidden');
-                toggleImg.src = './images/point-down-512.png'; // 切换回向下箭头图标
+                toggleImg.src = '/static/images/point-down-512.png'; // 切换回向下箭头图标
                 toggleImg.alt = 'Show Charts';
             }
         }
@@ -726,7 +726,7 @@
             document.getElementById('chartsContainer').classList.add('hidden');
             document.getElementById('chartsHeader').classList.add('hidden'); // 隐藏 chartsHeader
             // 确保按钮图像重置为 "Show Charts" 图标
-            document.getElementById('toggleChartsImg').src = './images/point-down-512.png';
+            document.getElementById('toggleChartsImg').src = '/static/images/point-down-512.png';
             document.getElementById('toggleChartsImg').alt = 'Show Charts';
 
             // 重置表单验证状态

@@ -1,0 +1,15 @@
+runtime: python312  # 使用 Python 3.12 运行时
+
+handlers:
+  # 静态文件处理，将 /static 对应到 client-side 目录
+  - url: /static
+    static_dir: client-side
+
+  # 将根路径 / 映射到 index.html 文件
+  - url: /
+    static_files: client-side/index.html
+    upload: client-side/index.html
+
+  # 所有其他请求（包括 API 请求）由 Flask 应用处理
+  - url: /.*
+    script: auto

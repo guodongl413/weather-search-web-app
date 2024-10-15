@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # 加载 .env 文件中的环境变量
-load_dotenv()
+load_dotenv(dotenv_path="server-side/.env")
 
 # 获取环境变量
 TOMORROW_API_KEY = os.getenv('TOMORROW_API_KEY')
@@ -29,6 +29,7 @@ def get_location():
     city = request.args.get('city')
     state = request.args.get('state')
 
+    # 获取当前 IP 地址的位置信息
     if use_current_location:
         ip_info_response = requests.get(f'https://ipinfo.io?token={IPINFO_API_TOKEN}')
         if ip_info_response.status_code != 200:
@@ -144,5 +145,5 @@ def weather_data():
     return jsonify({'daily': daily_data, 'hourly': hourly_data})
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)

@@ -22,7 +22,7 @@ body {
 }
 
 .form-header {
-    background: url('./images/banner.jpg') no-repeat center;
+    background: url('/static/images/banner.jpg') no-repeat center;
     background-size: cover;
     padding: 30px;
     text-align: center;
