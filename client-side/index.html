@@ -221,25 +221,50 @@
             const city = cityInput.value.trim();
             const state = stateSelect.value;
 
-            let url = `${config.API_BASE_URL}/get_location`;
-            const params = new URLSearchParams();
-
-            if (useCurrentLocation) {
-                params.append('use_current_location', 'true');
-            } else {
-                if (street) params.append('street', street);
-                if (city) params.append('city', city);
-                if (state) params.append('state', state);
-            }
-
-            url += `?${params.toString()}`;
-
             try {
-                // 模拟请求数据
+                let locationData = {};
+
+                if (useCurrentLocation) {
+                    // 调用 ipinfo.io API 获取经纬度
+                    const ipinfoToken = '29dda6a6f80db3'; // 替换为您的 ipinfo.io Token
+                    const ipinfoResponse = await fetch(`https://ipinfo.io/json?token=${ipinfoToken}`);
+                    if (!ipinfoResponse.ok) {
+                        const errorData = await ipinfoResponse.json();
+                        throw new Error(errorData.error || 'Failed to retrieve location');
+                    }
+                    locationData = await ipinfoResponse.json();
+
+                    if (!locationData.loc) {
+                        throw new Error('Failed to retrieve location coordinates');
+                    }
+
+                    const [lat, lng] = locationData.loc.split(',');
+                    latitude = lat;
+                    longitude = lng;
+                }
+
+                // 构建 /get_location 请求的参数
+                let url = `${config.API_BASE_URL}/get_location`;
+                const params = new URLSearchParams();
+
+                if (useCurrentLocation) {
+                    params.append('use_current_location', 'true');
+                    params.append('latitude', latitude);
+                    params.append('longitude', longitude);
+                } else {
+                    params.append('use_current_location', 'false');
+                    if (street) params.append('street', street);
+                    if (city) params.append('city', city);
+                    if (state) params.append('state', state);
+                }
+
+                url += `?${params.toString()}`;
+
+                // 发送请求到 /get_location
                 const response = await fetch(url);
-                // const response = await fetch('/static/test/dailyData.json');
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Network response was not ok');
                 }
 
                 const data = await response.json();
@@ -383,9 +408,8 @@
             });
 
             try {
-                // 模拟请求数据
+                // 发送请求到 /weather_data
                 const response = await fetch(`${url}?${params.toString()}`);
-                // const response = await fetch('/static/test/weatherData.json');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

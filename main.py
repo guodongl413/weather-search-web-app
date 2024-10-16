@@ -28,19 +28,22 @@ def get_location():
     street = request.args.get('street')
     city = request.args.get('city')
     state = request.args.get('state')
+    latitude = request.args.get('latitude')
+    longitude = request.args.get('longitude')
 
-    # 获取当前 IP 地址的位置信息
+    # Debug 信息
+    print(f"use_current_location: {use_current_location}")
+    print(f"street: {street}, city: {city}, state: {state}")
+    print(f"latitude: {latitude}, longitude: {longitude}")
+
     if use_current_location:
-        ip_info_response = requests.get(f'https://ipinfo.io?token={IPINFO_API_TOKEN}')
-        if ip_info_response.status_code != 200:
-            return jsonify({'error': 'Failed to retrieve current location'}), 400
-        location_data = ip_info_response.json()
-        lat_lng = location_data.get('loc')
-        if not lat_lng:
-            return jsonify({'error': 'Failed to retrieve current location coordinates'}), 400
+        if not latitude or not longitude:
+            return jsonify({'error': 'Latitude and Longitude are required for current location'}), 400
 
-        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat_lng}&key={GOOGLE_MAPS_API_KEY}"
+        formatted_address = None
+        geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?latlng={latitude},{longitude}&key={GOOGLE_MAPS_API_KEY}"
         geocode_response = requests.get(geocode_url)
+        print(f"Geocode API response status: {geocode_response.status_code}")
         if geocode_response.status_code != 200:
             return jsonify({'error': 'Google Maps API request failed'}), 400
         geocode_data = geocode_response.json()
@@ -49,8 +52,6 @@ def get_location():
             formatted_address = geocode_data['results'][0]['formatted_address']
         else:
             return jsonify({'error': 'Unable to retrieve formatted address'}), 400
-
-        latitude, longitude = lat_lng.split(',')
     else:
         if not street or not city or not state:
             return jsonify({'error': 'Street, City, and State are required'}), 400
@@ -58,6 +59,7 @@ def get_location():
         address = f"{street}, {city}, {state}"
         geocode_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={GOOGLE_MAPS_API_KEY}"
         geocode_response = requests.get(geocode_url)
+        print(f"Geocode API response status: {geocode_response.status_code}")
         if geocode_response.status_code != 200:
             return jsonify({'error': 'Google Maps API request failed'}), 400
         geocode_data = geocode_response.json()
@@ -69,6 +71,7 @@ def get_location():
         latitude, longitude = location['lat'], location['lng']
         formatted_address = address
 
+    # 获取天气数据
     weather_url = "https://api.tomorrow.io/v4/timelines"
     query_params = {
         "location": f"{latitude},{longitude}",
@@ -87,6 +90,7 @@ def get_location():
     }
 
     weather_response = requests.get(weather_url, headers=headers, params=query_params)
+    print(f"Tomorrow.io API response status: {weather_response.status_code}")
     if weather_response.status_code != 200:
         return jsonify({'error': 'Tomorrow.io API request failed'}), 400
     weather_data = weather_response.json()
@@ -124,6 +128,8 @@ def fetch_weather_data(latitude, longitude, timesteps, fields):
 def weather_data():
     latitude = request.args.get('latitude')
     longitude = request.args.get('longitude')
+
+    print(f"Received weather_data request with latitude: {latitude}, longitude: {longitude}")
 
     if not latitude or not longitude:
         return jsonify({'error': 'Latitude and Longitude are required'}), 400
